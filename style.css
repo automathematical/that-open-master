@@ -135,3 +135,10 @@ header {
   justify-content: space-between;
   width: 100%;
 }
+
+#projects-list {
+  display: grid;
+  padding: 20px 40px;
+  gap: 30px;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
