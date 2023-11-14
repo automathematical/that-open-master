@@ -1,5 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
+:root {
+  --primary: #029ae0;
+  --primary-100: #073044;
+  --primary-200: #415a66;
+  --primary-300: #017cb3;
+  --primary-400: #50b6e6;
+  --background: #202124;
+  --background-100: #26282b;
+  --background-200: #3b3c3f;
+  --font-xs: 10px;
+  --font-sm: 12px;
+  --font-base: 14px;
+  --font-lg: 16px;
+  --font-xl: 18px;
+  --font-2xl: 20px;
+  --font-3xl: 22px;
+}
+
 * {
   font-family: 'inter', sans-serif;
   margin: 0;
@@ -11,9 +29,45 @@ body {
   grid-template-columns: 300px 1fr;
   grid-template-areas: 'sidebar content';
   height: 100vh;
-  background-color: #202124;
+  background-color: var(--background);
   color: #fff;
 }
+
+/* general styles */
+h2 {
+  font-size: var(--font-3xl);
+}
+
+h3 {
+  font-size: var(--font-2xl);
+}
+
+h4 {
+  font-size: var(--font-xl);
+}
+
+h5 {
+  font-size: var(--font-lg);
+}
+
+button {
+  padding: 8px 15px;
+  height: 40px;
+  font-size: var(--font-base);
+  color: white;
+  border-radius: 100px;
+  border: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background-color: var(--primary);
+}
+
+button:hover {
+  color: red;
+}
+
+/* Sidebar */
 
 #sidebar {
   background-color: #26282b;
@@ -30,7 +84,7 @@ body {
 #nav-buttons {
   display: flex;
   flex-direction: column;
-  row-gap: 20px;
+  row-gap: 15px;
 }
 
 #nav-buttons li {
@@ -43,4 +97,13 @@ body {
 }
 
 #content {
+}
+
+/* Content styles */
+
+header {
+  padding: 30px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
