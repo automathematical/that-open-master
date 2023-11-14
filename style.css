@@ -64,13 +64,13 @@ button {
 }
 
 button:hover {
-  color: red;
+  background-color: var(--primary-400);
 }
 
 /* Sidebar */
 
 #sidebar {
-  background-color: #26282b;
+  background-color: var();
   padding: 25px;
   display: flex;
   flex-direction: column;
@@ -93,7 +93,10 @@ button:hover {
   border-radius: 10px;
   font-size: 14px;
   cursor: pointer;
-  background-color: #029ae0;
+}
+
+#nav-buttons li:hover {
+  background-color: var(--primary);
 }
 
 #content {
@@ -106,4 +109,29 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.project-card {
+  background-color: var(--background-100);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.project-card:hover {
+  outline: 2px solid var(--primary);
+}
+
+.card-content {
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  align-items: start;
+}
+
+.card-property {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
