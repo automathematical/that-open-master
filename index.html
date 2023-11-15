@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
 <body>
     <aside id="sidebar"><img src="" alt="">
@@ -16,6 +18,51 @@
         </ul>
     </aside>
     <main id="content">
+        <dialog id="new-project-modal">
+            <form>
+                <h2>New Project</h2>
+                <div class="input-list">
+                    <div class="form-field-container">
+                        <label><span class="material-icons-round">apartment</span>Name</label>
+                        <input type="text" placeholder="What's the name of your project?">
+                        <p style="color: gray; font-size: var(--font-sm); margin-top: 5px; font-style: italic;">TIP:
+                            Give it a short name</p>
+                    </div>
+                    <div class="form-field-container">
+                        <label><span class="material-icons-round">subject</span>Description</label>
+                        <textarea cols="30" rows="5"
+                            placeholder="Give your project a nice description! So people is jealous about it."></textarea>
+                    </div>
+                    <div class="form-field-container">
+                        <label><span class="material-icons-round">person</span>Role</label>
+                        <select>
+                            <option>Architect</option>
+                            <option>Engineer</option>
+                            <option>Developer</option>
+                        </select>
+                    </div>
+                    <div class="form-field-container">
+                        <label><span class="material-icons-round">not_listed_location</span>Status</label>
+                        <select>
+                            <option>Pending</option>
+                            <option>Active</option>
+                            <option>Finished</option>
+                        </select>
+                    </div>
+                    <div class="form-field-container">
+                        <label for="finishDate">
+                            <span class="material-icons-round">calendar_month</span>
+                            Finish Date
+                        </label>
+                        <input type="date" name="finishDate"></input>
+                    </div>
+                    <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
+                        <button style="background-color: transparent;">Cancel</button>
+                        <button style="background-color: rgb(18, 145, 18);">Accept</button>
+                    </div>
+                </div>
+            </form>
+        </dialog>
         <header>
             <h2>Project</h2>
             <div>
@@ -24,8 +71,116 @@
         </header>
         <div id="projects-list">
             <div class="project-card">
-                <div>
-                    <p>HC</p>
+                <div class="card-header">
+                    <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1;">HC</p>
+                    <div>
+                        <h5>Project Name</h5>
+                        <p>Project Description Goes here...</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="card-header">
+                    <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1;">HC</p>
+                    <div>
+                        <h5>Project Name</h5>
+                        <p>Project Description Goes here...</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="card-header">
+                    <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1;">HC</p>
+                    <div>
+                        <h5>Project Name</h5>
+                        <p>Project Description Goes here...</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="card-header">
+                    <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1;">HC</p>
+                    <div>
+                        <h5>Project Name</h5>
+                        <p>Project Description Goes here...</p>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                    <div class="card-property">
+                        <p>Status</p>
+                        <p>Active</p>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="card-header">
+                    <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1;">HC</p>
                     <div>
                         <h5>Project Name</h5>
                         <p>Project Description Goes here...</p>
