@@ -1,3 +1,5 @@
+import { Project } from './src/class/Project'
+
 const showModal = (id) => {
   const modal = document.getElementById(id)
   modal.showModal()
@@ -18,13 +20,14 @@ if (projectForm) {
   projectForm.addEventListener('submit', (e) => {
     e.preventDefault()
     const formData = new FormData(projectForm)
-    const project = {
+    const projectData = {
       name: formData.get('name'),
       description: formData.get('description'),
       status: formData.get('status'),
-      role: formData.get('role'),
+      userRole: formData.get('role'),
       finishDate: formData.get('finishDate'),
     }
+    const project = new Project(projectData)
     console.log(project)
   })
 } else {
