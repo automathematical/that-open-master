@@ -1,11 +1,25 @@
-import { Project } from './src/class/Project'
 import { IProject, UserRole, ProjectStatus } from './src/class/Project'
+import { ProjectManager } from './src/class/ProjectManager'
 
 const showModal = (id: string) => {
   const modal = document.getElementById(id)
-  if (modal && modal instanceof HTMLDialogElement)
+  if (modal && modal instanceof HTMLDialogElement) {
     modal.showModal()
+  } else {
+    console.log("the provided modal wasn't found. ID: ", id);
+  }
 }
+const closeModal = (id: string) => {
+  const modal = document.getElementById(id)
+  if (modal && modal instanceof HTMLDialogElement) {
+    modal.close()
+  } else {
+    console.log("the provided modal wasn't found. ID: ", id);
+  }
+}
+
+const projectListUI = document.getElementById('projects-list') as HTMLElement
+const projectManager = new ProjectManager(projectListUI)
 
 // this is the document ..
 const newProjectBtn = document.getElementById('new-project-btn')
@@ -29,7 +43,8 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       userRole: formData.get('role') as UserRole,
       finishDate: new Date(('finishDate') as string),
     }
-    const project = new Project(projectData)
+    const project = projectManager.newProject(projectData)
+    projectForm.reset()
     console.log(project)
   })
 } else {
