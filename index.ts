@@ -1,8 +1,10 @@
 import { Project } from './src/class/Project'
+import { IProject, UserRole, ProjectStatus } from './src/class/Project'
 
-const showModal = (id) => {
+const showModal = (id: string) => {
   const modal = document.getElementById(id)
-  modal.showModal()
+  if (modal && modal instanceof HTMLDialogElement)
+    modal.showModal()
 }
 
 // this is the document ..
@@ -16,16 +18,16 @@ if (newProjectBtn) {
 }
 
 const projectForm = document.getElementById('new-project-form')
-if (projectForm) {
+if (projectForm && projectForm instanceof HTMLFormElement) {
   projectForm.addEventListener('submit', (e) => {
     e.preventDefault()
     const formData = new FormData(projectForm)
-    const projectData = {
-      name: formData.get('name'),
-      description: formData.get('description'),
-      status: formData.get('status'),
-      userRole: formData.get('role'),
-      finishDate: formData.get('finishDate'),
+    const projectData: IProject = {
+      name: formData.get('name') as string,
+      description: formData.get('description') as string,
+      status: formData.get('status') as ProjectStatus,
+      userRole: formData.get('role') as UserRole,
+      finishDate: new Date(('finishDate') as string),
     }
     const project = new Project(projectData)
     console.log(project)
