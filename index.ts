@@ -59,3 +59,10 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
 } else {
   console.log('The Project form was not found')
 }
+
+const exportProjectsBtn = document.getElementById("export-projects-btn")
+if (exportProjectsBtn) {
+  exportProjectsBtn.addEventListener("click", () => {
+    projectManager.exportProject()
+  })
+}
