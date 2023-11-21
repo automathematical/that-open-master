@@ -1,20 +1,12 @@
 import { IProject, UserRole, ProjectStatus } from './src/class/Project'
 import { ProjectManager } from './src/class/ProjectManager'
 
-const showModal = (id: string) => {
+function toggleModal(active: boolean, id: string) {
   const modal = document.getElementById(id)
   if (modal && modal instanceof HTMLDialogElement) {
-    modal.showModal()
+    active ? modal.showModal() : modal.close()
   } else {
-    console.log("the provided modal wasn't found. ID: ", id);
-  }
-}
-const closeModal = (id: string) => {
-  const modal = document.getElementById(id)
-  if (modal && modal instanceof HTMLDialogElement) {
-    modal.close()
-  } else {
-    console.log("the provided modal wasn't found. ID: ", id);
+    console.warn("the provided modal wasn't found. ID: ", id);
   }
 }
 
@@ -25,7 +17,7 @@ const projectManager = new ProjectManager(projectListUI)
 const newProjectBtn = document.getElementById('new-project-btn')
 if (newProjectBtn) {
   newProjectBtn.addEventListener('click', () => {
-    showModal('new-project-modal')
+    toggleModal(true, 'new-project-modal')
   })
 } else {
   console.log('New Projects button was not found')
@@ -43,9 +35,26 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       userRole: formData.get('role') as UserRole,
       finishDate: new Date(('finishDate') as string),
     }
-    const project = projectManager.newProject(projectData)
-    projectForm.reset()
-    console.log(project)
+
+    try {
+      const project = projectManager.newProject(projectData)
+      projectForm.reset()
+
+      // Cancel button
+      projectForm.addEventListener("click", (e) => {
+        const button = e.target as HTMLButtonElement
+        if (button.value == "cancel") {
+          if (projectForm instanceof HTMLFormElement) {
+            projectForm.reset()
+            toggleModal(false, "new-project-modal")
+          }
+        }
+      })
+    } catch (err) {
+      // window.alert(err)
+      const error = document.getElementById('error') as HTMLElement
+      error.innerHTML = `<div style='background-color:red'>${err}</div>`
+    }
   })
 } else {
   console.log('The Project form was not found')

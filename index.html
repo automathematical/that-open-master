@@ -28,6 +28,7 @@
                             <input name="name" type="text" placeholder="What's the name of your project?">
                             <p style="color: gray; font-size: var(--font-sm); margin-top: 5px; font-style: italic;">TIP:
                                 Give it a short name</p>
+                            <p id="error"></p>
                         </div>
                         <div class="form-field-container">
                             <label><span class="material-icons-round">subject</span>Description</label>
@@ -58,8 +59,8 @@
                             <input name="finishDate" type="date" name="finishDate"></input>
                         </div>
                         <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
-                            <button style="background-color: transparent;">Cancel</button>
-                            <button style="background-color: rgb(18, 145, 18);">Accept</button>
+                            <button type="button" value="cancel" style="background-color: transparent;">Cancel</button>
+                            <button type="submit" style="background-color: rgb(18, 145, 18);">Accept</button>
                         </div>
                     </div>
                 </form>
@@ -71,7 +72,7 @@
                 </div>
             </header>
             <div id="projects-list">
-                <div class="project-card">
+                <!-- <div class="project-card">
                     <div class="card-header">
                         <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1;">HC</p>
                         <div>
@@ -97,7 +98,7 @@
                             <p>45%</p>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="page" id="project-details" style="display: none;">
