@@ -34,9 +34,15 @@ export class ProjectManager {
         const detailsPage = document.getElementById('project-details')
         if (!detailsPage) { return }
         const name = detailsPage.querySelector("[data-project-info='name']")
-        if (name) {
-            name.textContent = project.name
-        }
+        if (name) { name.textContent = project.name }
+        const initials = detailsPage.querySelector("[data-project-info='initials']")
+        if (initials) { initials.textContent = project.name.split(" ").map((n) => n[0]).join("") }
+        const description = detailsPage.querySelector("[data-project-info='description']")
+        if (description) { description.textContent = project.description }
+        const cardName = detailsPage.querySelector("[data-project-info='cardName']")
+        if (cardName) { cardName.textContent = project.name }
+        const status = detailsPage.querySelector("[data-project-info='status']")
+        if (status) { status.textContent = project.status }
     }
 
     getProject(id: string) {
