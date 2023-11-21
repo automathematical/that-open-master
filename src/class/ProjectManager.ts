@@ -17,6 +17,13 @@ export class ProjectManager {
             throw new Error(`A project with the name "${data.name}" already exists`)
         }
         const project = new Project(data)
+        project.ui.addEventListener("click", () => {
+            const projectsPage = document.getElementById("projects-page")
+            const detailsPage = document.getElementById("project-details")
+            if (!projectsPage || !detailsPage) { return }
+            projectsPage.style.display = "none"
+            detailsPage.style.display = "flex"
+        })
         this.ui.append(project.ui)
         this.list.push(project)
         return project
@@ -64,6 +71,29 @@ export class ProjectManager {
         URL.revokeObjectURL(url)
     }
 
-    importFromJSON() { }
+    importFromJSON() {
+        const input = document.createElement('input')
+        input.type = 'file'
+        input.accept = 'application/json'
+        const reader = new FileReader()
+        reader.addEventListener("load", () => {
+            const json = reader.result
+            if (!json) { return }
+            const projects: IProject[] = JSON.parse(json as string)
+            for (const project of projects) {
+                try {
+                    this.newProject(project)
+                } catch (error) {
+
+                }
+            }
+        })
+        input.addEventListener('change', () => {
+            const filesList = input.files
+            if (!filesList) { return }
+            reader.readAsText(filesList[0])
+        })
+        input.click()
+    }
 
 }

@@ -24,16 +24,12 @@ export class Project implements IProject {
     cost: number = 0
     progress: number = 0
     id: string
-    error: string
 
     constructor(data: IProject) {
-        this.name = data.name
-        this.description = data.description
-        this.status = data.status
-        this.userRole = data.userRole
-        this.finishDate = data.finishDate
+        for (const key in data) {
+            this[key] = data[key]
+        }
         this.id = uuidv4()
-        // this.error = error
         this.setUI()
     }
     setUI() {

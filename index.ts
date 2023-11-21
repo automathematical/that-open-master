@@ -23,6 +23,8 @@ if (newProjectBtn) {
   console.log('New Projects button was not found')
 }
 
+
+
 const projectForm = document.getElementById('new-project-form')
 if (projectForm && projectForm instanceof HTMLFormElement) {
   projectForm.addEventListener('submit', (e) => {
@@ -51,9 +53,8 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
         }
       })
     } catch (err) {
-      // window.alert(err)
-      const error = document.getElementById('error') as HTMLElement
-      error.innerHTML = `<div style='background-color:red'>${err}</div>`
+      // window.alert(err
+      (document.getElementById('error') as HTMLElement).innerHTML = `<div style='background-color:red'>${err}</div>`
     }
   })
 } else {
@@ -64,5 +65,11 @@ const exportProjectsBtn = document.getElementById("export-projects-btn")
 if (exportProjectsBtn) {
   exportProjectsBtn.addEventListener("click", () => {
     projectManager.exportProject()
+  })
+}
+const importProjectsBtn = document.getElementById("import-projects-btn")
+if (importProjectsBtn) {
+  importProjectsBtn.addEventListener("click", () => {
+    projectManager.importFromJSON()
   })
 }
