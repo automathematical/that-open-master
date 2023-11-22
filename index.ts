@@ -23,7 +23,15 @@ if (newProjectBtn) {
   console.log('New Projects button was not found')
 }
 
+// const editProjectBtn = document.getElementById('edit-project-btn')
+// if (editProjectBtn) {
+//   editProjectBtn.addEventListener('click', () => {
+//     toggleModal(true, 'new-project-modal')
 
+//   })
+// } else {
+//   console.log('Edit Projects button was not found')
+// }
 
 const projectForm = document.getElementById('new-project-form')
 if (projectForm && projectForm instanceof HTMLFormElement) {

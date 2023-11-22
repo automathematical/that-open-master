@@ -56,7 +56,7 @@
                                 <span class="material-icons-round">calendar_month</span>
                                 Finish Date
                             </label>
-                            <input name="finishDate" type="date" name="finishDate"></input>
+                            <input name="finishDate" type="date" name="finishDate" value="2024-01-01"></input>
                         </div>
                         <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
                             <button type="button" value="cancel" style="background-color: transparent;">Cancel</button>
@@ -76,6 +76,7 @@
                 </div>
             </header>
             <div id="projects-list">
+                <!-- DEFAULT HARD CODED PROJECT -->
                 <!-- <div class="project-card">
                     <div class="card-header">
                         <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1;">HC</p>
@@ -117,10 +118,10 @@
                     <div class="dashboard-card" style="padding: 30px 0;">
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; padding: 0px 30px; margin-bottom: 30px;">
-                            <p data-project-info='initials'
-                                style="font-size: 20px; background-color: #ca8134; aspect-ratio: 1; border-radius: 100%; padding: 12px;">
+                            <p id="card-icon" data-project-info='initials'
+                                style="font-size: 20px; background-color: #ca8134; aspect-ratio: 1; border-radius: 100%; padding: 12px; text-transform: uppercase; ">
                                 HC</p>
-                            <button class="btn-secondary">
+                            <button id="edit-project-btn" class="btn-secondary">
                                 <p style="width: 100%;">Edit</p>
                             </button>
                         </div>
@@ -145,7 +146,7 @@
                                 </div>
                                 <div>
                                     <p style="color: #969696; font-size: var(--font-sm)">Finish Date</p>
-                                    <p>2023-05-01</p>
+                                    <p data-project-info='finishDate'>2023-05-01</p>
                                 </div>
                             </div>
                             <div style="background-color: #404040; border-radius: 9999px; overflow: auto;">

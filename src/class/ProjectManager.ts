@@ -16,6 +16,11 @@ export class ProjectManager {
         if (nameInUse) {
             throw new Error(`A project with the name "${data.name}" already exists`)
         }
+        const nameLength = data.name.length
+        if (nameLength < 5) {
+            throw new Error('Name is too short')
+        }
+
         const project = new Project(data)
         project.ui.addEventListener("click", () => {
             const projectsPage = document.getElementById("projects-page")
@@ -24,10 +29,18 @@ export class ProjectManager {
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
             this.setDetailsPage(project)
+            this.setRandomColor(project)
         })
         this.ui.append(project.ui)
         this.list.push(project)
         return project
+    }
+
+    private setRandomColor(project: Project) {
+        const colors = ['#5ed14f', '#c5d14f', '#d17b4f', '#4f7bd1', '#4fbbd1']
+        const bg = document.getElementById("card-icon")
+        if (!bg) { return }
+        bg.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]
     }
 
     private setDetailsPage(project: Project) {
@@ -68,6 +81,11 @@ export class ProjectManager {
         })
         this.list = remaining
     }
+
+    // updateProject(id: string) {
+    //     const project = this.getProject(id)
+    //     if (!project) { return }
+    // }
 
     calcTotalCost() {
         const totalCost: number = this.list.reduce(
