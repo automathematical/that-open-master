@@ -14,6 +14,7 @@ const projectListUI = document.getElementById('projects-list') as HTMLElement
 const projectManager = new ProjectManager(projectListUI)
 
 // this is the document ..
+// open the project modal by clicking the new project button
 const newProjectBtn = document.getElementById('new-project-btn')
 if (newProjectBtn) {
   newProjectBtn.addEventListener('click', () => {
@@ -23,16 +24,7 @@ if (newProjectBtn) {
   console.log('New Projects button was not found')
 }
 
-// const editProjectBtn = document.getElementById('edit-project-btn')
-// if (editProjectBtn) {
-//   editProjectBtn.addEventListener('click', () => {
-//     toggleModal(true, 'new-project-modal')
-
-//   })
-// } else {
-//   console.log('Edit Projects button was not found')
-// }
-
+// get the html form and new formData -> projectData
 const projectForm = document.getElementById('new-project-form')
 if (projectForm && projectForm instanceof HTMLFormElement) {
   projectForm.addEventListener('submit', (e) => {
@@ -67,6 +59,20 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
   })
 } else {
   console.log('The Project form was not found')
+}
+
+const editProjectBtn = document.getElementById('edit-project-btn')
+if (editProjectBtn) {
+  editProjectBtn.addEventListener('click', () => {
+    // toggleModal(true, 'new-project-modal')
+    const modal = document.getElementById('new-project-modal')
+    if (modal && modal instanceof HTMLDialogElement) {
+      modal.showModal()
+    } else {
+      console.warn('the provided modal was not found')
+    }
+    projectManager.updateProject()
+  })
 }
 
 const exportProjectsBtn = document.getElementById("export-projects-btn")

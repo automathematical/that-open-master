@@ -36,6 +36,11 @@ export class ProjectManager {
         return project
     }
 
+    updateProject() {
+        console.log('clicked');
+
+    }
+
     private setRandomColor(project: Project) {
         const colors = ['#5ed14f', '#c5d14f', '#d17b4f', '#4f7bd1', '#4fbbd1']
         const bg = document.getElementById("card-icon")
@@ -81,11 +86,6 @@ export class ProjectManager {
         })
         this.list = remaining
     }
-
-    // updateProject(id: string) {
-    //     const project = this.getProject(id)
-    //     if (!project) { return }
-    // }
 
     calcTotalCost() {
         const totalCost: number = this.list.reduce(
