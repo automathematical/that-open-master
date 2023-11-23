@@ -36,13 +36,8 @@ export class ProjectManager {
         return project
     }
 
-    updateProject() {
-        console.log('clicked');
-
-    }
-
     private setRandomColor(project: Project) {
-        const colors = ['#5ed14f', '#c5d14f', '#d17b4f', '#4f7bd1', '#4fbbd1']
+        const colors = ['#5ed14f', ' #c5d14f', '#d17b4f', '#4f7bd1', '#4fbbd1']
         const bg = document.getElementById("card-icon")
         if (!bg) { return }
         bg.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]
@@ -61,6 +56,10 @@ export class ProjectManager {
         if (cardName) { cardName.textContent = project.name }
         const status = detailsPage.querySelector("[data-project-info='status']")
         if (status) { status.textContent = project.status }
+        const userRole = detailsPage.querySelector("[data-project-info='userRole']")
+        if (userRole) { userRole.textContent = project.userRole }
+        // const finishDate = detailsPage.querySelector("[data-project-info='finishDate']")
+        // if (finishDate) { finishDate.textContent = project.finishDate.toDateString() }
     }
 
     getProject(id: string) {

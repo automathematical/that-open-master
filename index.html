@@ -56,7 +56,7 @@
                                 <span class="material-icons-round">calendar_month</span>
                                 Finish Date
                             </label>
-                            <input name="finishDate" type="date" name="finishDate" value="2024-01-01"></input>
+                            <input name="finishDate" type="date" value="2024-01-01"></input>
                         </div>
                         <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
                             <button type="button" value="cancel" style="background-color: transparent;">Cancel</button>
@@ -138,11 +138,11 @@
                                 </div>
                                 <div>
                                     <p style="color: #969696; font-size: var(--font-sm)">Cost</p>
-                                    <p>$ 2'542.000</p>
+                                    <p data-project-info='cost'>$ 2'542.000</p>
                                 </div>
                                 <div>
                                     <p style="color: #969696; font-size: var(--font-sm)">Role</p>
-                                    <p>Engineer</p>
+                                    <p data-project-info='userRole'>Engineer</p>
                                 </div>
                                 <div>
                                     <p style="color: #969696; font-size: var(--font-sm)">Finish Date</p>
@@ -164,7 +164,7 @@
                                     <span class="material-icons-round">search</span>
                                     <input type="text" placeholder="Search To-Do's by name" style="width: 100%;">
                                 </div>
-                                <span class="material-icons-round">add</span>
+                                <button><span id="new-todo-btn" class="material-icons-round">add</span> </button>
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; padding: 10px 30px; row-gap: 20px;">

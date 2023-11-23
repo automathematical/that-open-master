@@ -34,8 +34,8 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       name: formData.get('name') as string,
       description: formData.get('description') as string,
       status: formData.get('status') as ProjectStatus,
-      userRole: formData.get('role') as UserRole,
-      finishDate: new Date(('finishDate') as string),
+      userRole: formData.get('userRole') as UserRole,
+      finishDate: new Date('finishDate')
     }
 
     try {
@@ -53,6 +53,7 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
         }
       })
     } catch (err) {
+      projectForm.reset();
       // window.alert(err
       (document.getElementById('error') as HTMLElement).innerHTML = `<div style='background-color:red'>${err}</div>`
     }
@@ -61,18 +62,17 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
   console.log('The Project form was not found')
 }
 
+const newToDoBtn = document.getElementById('new-todo-btn')
+if (newToDoBtn) {
+  newToDoBtn.addEventListener('click', () => {
+    console.log('new todooo');
+  })
+}
 
 const editProjectBtn = document.getElementById('edit-project-btn')
 if (editProjectBtn) {
   editProjectBtn.addEventListener('click', () => {
-    // toggleModal(true, 'new-project-modal')
-    const modal = document.getElementById('new-project-modal')
-    if (modal && modal instanceof HTMLDialogElement) {
-      modal.showModal()
-    } else {
-      console.warn('the provided modal was not found')
-    }
-    projectManager.updateProject()
+    console.log('edit clicked');
   })
 }
 

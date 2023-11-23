@@ -32,6 +32,8 @@ export class Project implements IProject {
         this.id = uuidv4()
         this.setUI()
     }
+
+    //render data
     setUI() {
         if (this.ui) { return }
         this.ui = document.createElement("div")
