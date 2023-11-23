@@ -2,6 +2,10 @@ import { ErrorMessage } from './src/class/ErrorMessage'
 import { IProject, UserRole, ProjectStatus } from './src/class/Project'
 import { ProjectManager } from './src/class/ProjectManager'
 
+
+const projectListUI = document.getElementById('projects-list') as HTMLElement
+const projectManager = new ProjectManager(projectListUI)
+
 function toggleModal(active: boolean, id: string) {
   const modal = document.getElementById(id)
   if (modal && modal instanceof HTMLDialogElement) {
@@ -10,9 +14,6 @@ function toggleModal(active: boolean, id: string) {
     console.warn("the provided modal wasn't found. ID: ", id);
   }
 }
-
-const projectListUI = document.getElementById('projects-list') as HTMLElement
-const projectManager = new ProjectManager(projectListUI)
 
 // this is the document ..
 // open the project modal by clicking the new project button
@@ -45,13 +46,18 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       toggleModal(false, "new-project-modal")
       console.log(project);
 
+      const editProjectBtn = document.getElementById('edit-project-btn')
+      if (editProjectBtn) {
+        editProjectBtn.addEventListener('click', () => {
+          projectManager.updateProject(project)
+        })
+      }
 
       // Cancel button
       projectForm.addEventListener("click", (e) => {
         const button = e.target as HTMLButtonElement
         if (button.value == "cancel") {
           if (projectForm instanceof HTMLFormElement) {
-            projectForm.reset()
             toggleModal(false, "new-project-modal")
           }
         }
@@ -72,12 +78,7 @@ if (newToDoBtn) {
   })
 }
 
-const editProjectBtn = document.getElementById('edit-project-btn')
-if (editProjectBtn) {
-  editProjectBtn.addEventListener('click', () => {
-    console.log('edit clicked');
-  })
-}
+
 
 const exportProjectsBtn = document.getElementById("export-projects-btn")
 if (exportProjectsBtn) {

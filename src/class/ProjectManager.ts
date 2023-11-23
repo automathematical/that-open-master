@@ -24,6 +24,7 @@ export class ProjectManager {
         const project = new Project(data)
         const projectsPage = document.getElementById("projects-page")
         const detailsPage = document.getElementById("project-details")
+        const peoplePage = document.getElementById('users-page')
         project.ui.addEventListener("click", () => {
             if (!projectsPage || !detailsPage) { return }
             projectsPage.style.display = "none"
@@ -32,21 +33,35 @@ export class ProjectManager {
             this.setRandomColor(project)
         })
 
-        const projectsBtn = document.getElementById('projects-navbtn')
-        if (projectsBtn) {
-            projectsBtn.addEventListener("click", () => {
+        const projectsNavBtn = document.getElementById('projects-navbtn')
+        if (projectsNavBtn) {
+            projectsNavBtn.addEventListener("click", () => {
                 if (!projectsPage || !detailsPage) { return }
                 projectsPage.style.display = "flex"
                 detailsPage.style.display = "none"
             })
         }
+
+        const usersNavBtn = document.getElementById('users-navbtn')
+        if (usersNavBtn) {
+            usersNavBtn.addEventListener("click", () => {
+                if (!projectsPage || !detailsPage || !peoplePage) { return }
+                peoplePage.style.display = 'flex'
+                projectsPage.style.display = "none"
+                detailsPage.style.display = "none"
+            })
+        }
+
         this.ui.append(project.ui)
         this.list.push(project)
         return project
     }
 
-    updateProject(data: IProject) {
-        const project = new Project(data)
+
+
+    updateProject(project: Project) {
+        console.log('edit clicked');
+        this.deleteProject(project.id)
     }
 
     private setDetailsPage(project: Project) {
