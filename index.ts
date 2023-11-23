@@ -26,6 +26,10 @@ if (newProjectBtn) {
   console.log('New Projects button was not found')
 }
 
+function updateForm() {
+  toggleModal(true, 'new-project-modal')
+}
+
 // get the html form and new formData -> projectData
 const projectForm = document.getElementById('new-project-form')
 if (projectForm && projectForm instanceof HTMLFormElement) {
@@ -42,16 +46,18 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
 
     try {
       const project = projectManager.newProject(projectData)
-      projectForm.reset()
-      toggleModal(false, "new-project-modal")
-      console.log(project);
 
       const editProjectBtn = document.getElementById('edit-project-btn')
       if (editProjectBtn) {
         editProjectBtn.addEventListener('click', () => {
-          projectManager.updateProject(project)
+          projectManager.deleteProject(project.id)
+          projectForm.reset()
+          updateForm()
         })
       }
+
+      projectForm.reset()
+      toggleModal(false, "new-project-modal")
 
       // Cancel button
       projectForm.addEventListener("click", (e) => {

@@ -57,12 +57,10 @@ export class ProjectManager {
         return project
     }
 
-
-
-    updateProject(project: Project) {
-        console.log('edit clicked');
-        this.deleteProject(project.id)
-    }
+    // updateProject(project: Project) {
+    //     console.log('edit clicked');
+    //     this.deleteProject(project.id)
+    // }
 
     private setDetailsPage(project: Project) {
         const detailsPage = document.getElementById('project-details')
