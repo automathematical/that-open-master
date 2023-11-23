@@ -265,3 +265,22 @@ select:focus {
 .todo-item:hover {
   background-color: var(--primary);
 }
+
+/* Error Dialog */
+.error-dialog {
+  background-color: var(--background-200);
+  color: white;
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+}
+
+.error-dialog #error-ok {
+  display: flex;
+  margin: 15px 0px;
+  flex-direction: row;
+  justify-content: end;
+}

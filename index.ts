@@ -1,3 +1,4 @@
+import { ErrorMessage } from './src/class/ErrorMessage'
 import { IProject, UserRole, ProjectStatus } from './src/class/Project'
 import { ProjectManager } from './src/class/ProjectManager'
 
@@ -41,6 +42,9 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
     try {
       const project = projectManager.newProject(projectData)
       projectForm.reset()
+      toggleModal(false, "new-project-modal")
+      console.log(project);
+
 
       // Cancel button
       projectForm.addEventListener("click", (e) => {
@@ -52,10 +56,11 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
           }
         }
       })
-    } catch (err) {
+    } catch (error) {
       projectForm.reset();
-      // window.alert(err
-      (document.getElementById('error') as HTMLElement).innerHTML = `<div style='background-color:red'>${err}</div>`
+      const errordisp = new ErrorMessage(projectForm, error)
+      errordisp.showError()
+      // (document.getElementById('error') as HTMLElement).innerHTML = `<div style='background-color:red'>${err}</div>`
     }
   })
 } else {
