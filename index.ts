@@ -58,9 +58,7 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       })
     } catch (error) {
       projectForm.reset();
-      const errordisp = new ErrorMessage(projectForm, error)
-      errordisp.showError()
-      // (document.getElementById('error') as HTMLElement).innerHTML = `<div style='background-color:red'>${err}</div>`
+      (new ErrorMessage(projectForm, error)).showError()
     }
   })
 } else {

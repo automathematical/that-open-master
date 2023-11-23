@@ -22,15 +22,24 @@ export class ProjectManager {
         }
 
         const project = new Project(data)
+        const projectsPage = document.getElementById("projects-page")
+        const detailsPage = document.getElementById("project-details")
         project.ui.addEventListener("click", () => {
-            const projectsPage = document.getElementById("projects-page")
-            const detailsPage = document.getElementById("project-details")
             if (!projectsPage || !detailsPage) { return }
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
             this.setDetailsPage(project)
             this.setRandomColor(project)
         })
+
+        const projectsBtn = document.getElementById('projects-navbtn')
+        if (projectsBtn) {
+            projectsBtn.addEventListener("click", () => {
+                if (!projectsPage || !detailsPage) { return }
+                projectsPage.style.display = "flex"
+                detailsPage.style.display = "none"
+            })
+        }
         this.ui.append(project.ui)
         this.list.push(project)
         return project
@@ -55,8 +64,6 @@ export class ProjectManager {
         if (status) { status.textContent = project.status }
         const userRole = detailsPage.querySelector("[data-project-info='userRole']")
         if (userRole) { userRole.textContent = project.userRole }
-        // const finishDate = detailsPage.querySelector("[data-project-info='finishDate']")
-        // if (finishDate) { finishDate.textContent = project.finishDate.toDateString() }
     }
 
     private setRandomColor(project: Project) {
