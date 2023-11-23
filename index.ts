@@ -61,6 +61,7 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
   console.log('The Project form was not found')
 }
 
+
 const editProjectBtn = document.getElementById('edit-project-btn')
 if (editProjectBtn) {
   editProjectBtn.addEventListener('click', () => {
@@ -81,6 +82,7 @@ if (exportProjectsBtn) {
     projectManager.exportProject()
   })
 }
+
 const importProjectsBtn = document.getElementById("import-projects-btn")
 if (importProjectsBtn) {
   importProjectsBtn.addEventListener("click", () => {
