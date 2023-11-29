@@ -23,12 +23,12 @@ if (newProjectBtn) {
     toggleModal(true, 'new-project-modal')
   })
 } else {
-  console.log('New Projects button was not found')
+  console.log('New projects button was not found')
 }
 
-function updateForm() {
-  toggleModal(true, 'new-project-modal')
-}
+// function updateForm(id) {
+//   toggleModal(true, id)
+// }
 
 // get the html form and new formData -> projectData
 const projectForm = document.getElementById('new-project-form')
@@ -47,28 +47,26 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
     try {
       const project = projectManager.newProject(projectData)
 
-      const editProjectBtn = document.getElementById('edit-project-btn')
-      if (editProjectBtn) {
-        editProjectBtn.addEventListener('click', () => {
-          projectManager.deleteProject(project.id)
-          projectForm.reset()
-          updateForm()
-        })
-      }
-
       projectForm.reset()
       toggleModal(false, "new-project-modal")
 
-      // Cancel button
-      projectForm.addEventListener("click", (e) => {
-        const button = e.target as HTMLButtonElement
-        if (button.value == "cancel") {
-          if (projectForm instanceof HTMLFormElement) {
-            toggleModal(false, "new-project-modal")
+      const editProjectBtn = document.getElementById('edit-project-btn')
+      if (editProjectBtn) {
+        editProjectBtn.addEventListener('click', () => {
+          if (project.id != null) {
+            console.log('project deleted');
+            projectManager.deleteProject(project.id)
           }
-        }
+          // toggleModal(true, 'new-project-modal')
+        })
+      }
+
+      // Cancel button
+      projectForm.addEventListener("click", () => {
+        toggleModal(false, "new-project-modal")
       })
     } catch (error) {
+      q
       projectForm.reset();
       (new ErrorMessage(projectForm, error)).showError()
     }
@@ -77,14 +75,14 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
   console.log('The Project form was not found')
 }
 
+
+
 const newToDoBtn = document.getElementById('new-todo-btn')
 if (newToDoBtn) {
   newToDoBtn.addEventListener('click', () => {
     console.log('new todooo');
   })
 }
-
-
 
 const exportProjectsBtn = document.getElementById("export-projects-btn")
 if (exportProjectsBtn) {
