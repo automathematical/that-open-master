@@ -66,7 +66,6 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
         toggleModal(false, "new-project-modal")
       })
     } catch (error) {
-      q
       projectForm.reset();
       (new ErrorMessage(projectForm, error)).showError()
     }
