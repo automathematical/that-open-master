@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import { ErrorMessage } from './src/class/ErrorMessage'
 import { IProject, UserRole, ProjectStatus } from './src/class/Project'
 import { ProjectManager } from './src/class/ProjectManager'
@@ -74,8 +75,6 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
   console.log('The Project form was not found')
 }
 
-
-
 const newToDoBtn = document.getElementById('new-todo-btn')
 if (newToDoBtn) {
   newToDoBtn.addEventListener('click', () => {
@@ -96,3 +95,18 @@ if (importProjectsBtn) {
     projectManager.importFromJSON()
   })
 }
+
+//three js viewer
+const scene = new THREE.Scene()
+
+const viewerContainer = document.getElementById("viewer-container") as HTMLElement
+const containerDimensions = viewerContainer.getBoundingClientRect()
+const aspectRatio = containerDimensions.width / containerDimensions.height
+const camera = new THREE.PerspectiveCamera(75, aspectRatio)
+
+const renderer = new THREE.WebGLRenderer()
+viewerContainer.append(renderer.domElement)
+renderer.setSize(containerDimensions.width, containerDimensions.height)
+
+renderer.render(scene, camera)
+console.log(viewerContainer);
