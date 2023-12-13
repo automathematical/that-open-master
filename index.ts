@@ -1,9 +1,11 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { ErrorMessage } from './src/class/ErrorMessage'
 import { IProject, UserRole, ProjectStatus } from './src/class/Project'
 import { ProjectManager } from './src/class/ProjectManager'
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 
 
 const projectListUI = document.getElementById('projects-list') as HTMLElement
@@ -156,3 +158,15 @@ cubeControls.add(cube.position, "x", -10, 10, 1)
 cubeControls.add(cube.position, "y", -10, 10, 1)
 cubeControls.add(cube.position, "z", -10, 10, 1)
 cubeControls.add(cube, 'visible')
+
+const objLoader = new OBJLoader()
+const mtlLoader = new MTLLoader()
+
+
+mtlLoader.load('../assets/Gear/Gear1.mtl', (materials) => {
+  materials.preload()
+  objLoader.setMaterials(materials)
+  objLoader.load('../assets/Gear/Gear1.obj', (mesh) => {
+    scene.add(mesh)
+  })
+})
