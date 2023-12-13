@@ -109,7 +109,6 @@ const renderer = new THREE.WebGLRenderer()
 viewerContainer.append(renderer.domElement)
 renderer.setSize(containerDimensions.width, containerDimensions.height)
 
-renderer.render(scene, camera)
 
 const boxGeometry = new THREE.BoxGeometry()
 const material = new THREE.MeshStandardMaterial()
@@ -119,3 +118,5 @@ const directionalLight = new THREE.DirectionalLight()
 const ambientLight = new THREE.AmbientLight()
 
 scene.add(cube, directionalLight, ambientLight)
+
+renderer.render(scene, camera)
