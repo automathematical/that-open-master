@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import * as OBC from 'openbim-components'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
@@ -101,72 +102,96 @@ if (importProjectsBtn) {
 }
 
 //three js viewer
-const scene = new THREE.Scene()
+// const scene = new THREE.Scene()
 
-const viewerContainer = document.getElementById("viewer-container") as HTMLElement
+// const viewerContainer = document.getElementById("viewer-container") as HTMLElement
 
-const camera = new THREE.PerspectiveCamera(75)
-camera.position.z = 5
+// const camera = new THREE.PerspectiveCamera(75)
+// camera.position.z = 5
 
-const renderer = new THREE.WebGLRenderer({ alpha: true })
-viewerContainer.append(renderer.domElement)
+// const renderer = new THREE.WebGLRenderer({ alpha: true })
+// viewerContainer.append(renderer.domElement)
 
-function resizeViewer() {
-  const containerDimensions = viewerContainer.getBoundingClientRect()
-  renderer.setSize(containerDimensions.width, containerDimensions.height)
-  const aspectRatio = containerDimensions.width / containerDimensions.height
-  camera.aspect = aspectRatio
-  camera.updateProjectionMatrix
-}
+// function resizeViewer() {
+//   const containerDimensions = viewerContainer.getBoundingClientRect()
+//   renderer.setSize(containerDimensions.width, containerDimensions.height)
+//   const aspectRatio = containerDimensions.width / containerDimensions.height
+//   camera.aspect = aspectRatio
+//   camera.updateProjectionMatrix
+// }
 
-window.addEventListener("resize", resizeViewer)
+// window.addEventListener("resize", resizeViewer)
 
-resizeViewer()
+// resizeViewer()
 
+
+// BOX OR CUBE GEOMETRY FROM THREE JS LIB
 const boxGeometry = new THREE.BoxGeometry()
 const material = new THREE.MeshStandardMaterial()
 const cube = new THREE.Mesh(boxGeometry, material)
 
-const directionalLight = new THREE.DirectionalLight()
-const ambientLight = new THREE.AmbientLight()
-ambientLight.intensity = 0.4
+// const directionalLight = new THREE.DirectionalLight()
+// const ambientLight = new THREE.AmbientLight()
+// ambientLight.intensity = 0.4
 
-scene.add(cube, directionalLight, ambientLight)
+// scene.add(cube, directionalLight, ambientLight)
 
-const cameraControls = new OrbitControls(camera, viewerContainer)
+// const cameraControls = new OrbitControls(camera, viewerContainer)
 
-function renderScene() {
+// function renderScene() {
 
-  renderer.render(scene, camera)
-  requestAnimationFrame(renderScene)
-}
+//   renderer.render(scene, camera)
+//   requestAnimationFrame(renderScene)
+// }
 
-renderScene()
+// renderScene()
 
-const axes = new THREE.AxesHelper()
-const grid = new THREE.GridHelper()
-grid.material.transparent = true
-grid.material.opacity = 0.4
-grid.material.color = new THREE.Color("#808080")
+// const axes = new THREE.AxesHelper()
+// const grid = new THREE.GridHelper()
+// grid.material.transparent = true
+// grid.material.opacity = 0.4
+// grid.material.color = new THREE.Color("#808080")
 
-scene.add(axes, grid)
+// scene.add(axes, grid)
 
-const gui = new GUI()
+// const gui = new GUI()
 
-const cubeControls = gui.addFolder("Cube")
-cubeControls.add(cube.position, "x", -10, 10, 1)
-cubeControls.add(cube.position, "y", -10, 10, 1)
-cubeControls.add(cube.position, "z", -10, 10, 1)
-cubeControls.add(cube, 'visible')
+// const cubeControls = gui.addFolder("Cube")
+// cubeControls.add(cube.position, "x", -10, 10, 1)
+// cubeControls.add(cube.position, "y", -10, 10, 1)
+// cubeControls.add(cube.position, "z", -10, 10, 1)
+// cubeControls.add(cube, 'visible')
 
-const objLoader = new OBJLoader()
-const mtlLoader = new MTLLoader()
+// const objLoader = new OBJLoader()
+// const mtlLoader = new MTLLoader()
 
 
-mtlLoader.load('../assets/Gear/Gear1.mtl', (materials) => {
-  materials.preload()
-  objLoader.setMaterials(materials)
-  objLoader.load('../assets/Gear/Gear1.obj', (mesh) => {
-    scene.add(mesh)
-  })
-})
+// mtlLoader.load('../assets/Gear/Gear1.mtl', (materials) => {
+//   materials.preload()
+//   objLoader.setMaterials(materials)
+//   objLoader.load('../assets/Gear/Gear1.obj', (mesh) => {
+//     scene.add(mesh)
+//   })
+// })
+
+const viewer = new OBC.Components()
+
+const sceneComponent = new OBC.SimpleScene(viewer)
+sceneComponent.setup()
+viewer.scene = sceneComponent
+const scene = sceneComponent.get()
+scene.background = null
+
+const viewerContainer = document.getElementById('viewer-container') as HTMLDivElement
+const rendererComponent = new OBC.SimpleRenderer(viewer, viewerContainer)
+viewer.renderer = rendererComponent
+
+const cameraComponent = new OBC.SimpleCamera(viewer)
+viewer.camera = cameraComponent
+
+viewer.init()
+cameraComponent.updateAspect()
+
+scene.add(cube)
+
+const ifcLoader = new OBC.FragmentIfcLoader(viewer)
