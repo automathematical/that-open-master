@@ -193,6 +193,7 @@ viewer.raycaster = raycasterComponent
 
 viewer.init()
 cameraComponent.updateAspect()
+rendererComponent.postproduction.enabled = true
 
 scene.add(cube)
 
