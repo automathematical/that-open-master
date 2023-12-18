@@ -124,7 +124,6 @@ if (importProjectsBtn) {
 
 // resizeViewer()
 
-
 // BOX OR CUBE GEOMETRY FROM THREE JS LIB
 const boxGeometry = new THREE.BoxGeometry()
 const material = new THREE.MeshStandardMaterial()
@@ -195,3 +194,10 @@ cameraComponent.updateAspect()
 scene.add(cube)
 
 const ifcLoader = new OBC.FragmentIfcLoader(viewer)
+
+const toolbar = new OBC.Toolbar(viewer)
+toolbar.addChild(
+  ifcLoader.uiElement.get('main')
+)
+
+viewer.ui.addToolbar(toolbar)
