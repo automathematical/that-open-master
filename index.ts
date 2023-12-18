@@ -47,7 +47,7 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       description: formData.get('description') as string,
       status: formData.get('status') as ProjectStatus,
       userRole: formData.get('userRole') as UserRole,
-      finishDate: new Date('finishDate')
+      finishDate: new Date(formData.get("finishDate") as string)
     }
 
     try {
@@ -205,32 +205,42 @@ ifcLoader.settings.wasm = {
 const highlighter = new OBC.FragmentHighlighter(viewer)
 highlighter.setup()
 
+const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer)
+highlighter.events.select.onClear.add(() => {
+  propertiesProcessor.cleanPropertiesList()
+})
+
 const classifier = new OBC.FragmentClassifier(viewer)
-const classificationWindow = new OBC.FloatingWindow(viewer)
-viewer.ui.add(classificationWindow)
-classificationWindow.title = "model groups"
+
+const classificationsWindow = new OBC.FloatingWindow(viewer)
+viewer.ui.add(classificationsWindow)
+classificationsWindow.title = "model groups"
 
 async function createModelTree() {
   const fragmentTree = new OBC.FragmentTree(viewer)
   await fragmentTree.init()
   await fragmentTree.update(["storeys", "entities"])
+  const tree = fragmentTree.get().uiElement.get("tree")
   fragmentTree.onHovered.add((fragmentMap) => {
     highlighter.highlightByID("hover", fragmentMap)
+    console.log("highlighted");
+
   })
-  fragmentTree.onSelected.add((fragmentMap) => {
-    highlighter.highlightByID("select", fragmentMap)
-  })
-  const tree = fragmentTree.get().uiElement.get("tree")
+  // fragmentTree.onSelected.add((fragmentMap) => {
+  //   highlighter.highlightByID("select", fragmentMap)
+  //   console.log("selected");
+  // })
   return tree
 }
 
 ifcLoader.onIfcLoaded.add(async (model) => {
   highlighter.update()
+
   classifier.byStorey(model)
   classifier.byEntity(model)
   const tree = await createModelTree()
-  classificationWindow.slots.content.dispose(true)
-  classificationWindow.addChild(tree)
+  await classificationsWindow.slots.content.dispose(true)
+  classificationsWindow.addChild(tree)
 })
 
 const toolbar = new OBC.Toolbar(viewer)
