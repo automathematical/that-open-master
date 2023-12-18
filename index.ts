@@ -207,6 +207,7 @@ highlighter.setup()
 
 ifcLoader.onIfcLoaded.add((model) => {
   highlighter.update()
+  console.log(model);
 })
 
 const toolbar = new OBC.Toolbar(viewer)
