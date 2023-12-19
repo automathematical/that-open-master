@@ -224,18 +224,18 @@ async function createModelTree() {
   const tree = fragmentTree.get().uiElement.get("tree")
   fragmentTree.onHovered.add((fragmentMap) => {
     highlighter.highlightByID("hover", fragmentMap)
-    console.log("highlighted");
-
   })
   fragmentTree.onSelected.add((fragmentMap) => {
     highlighter.highlightByID("select", fragmentMap)
-    console.log("selected");
   })
   return tree
 }
 
 ifcLoader.onIfcLoaded.add(async (model) => {
   highlighter.update()
+
+  // classifier.byModel()
+  console.log(model);
 
   classifier.byStorey(model)
   classifier.byEntity(model)
