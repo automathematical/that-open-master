@@ -227,10 +227,10 @@ async function createModelTree() {
     console.log("highlighted");
 
   })
-  // fragmentTree.onSelected.add((fragmentMap) => {
-  //   highlighter.highlightByID("select", fragmentMap)
-  //   console.log("selected");
-  // })
+  fragmentTree.onSelected.add((fragmentMap) => {
+    highlighter.highlightByID("select", fragmentMap)
+    console.log("selected");
+  })
   return tree
 }
 
