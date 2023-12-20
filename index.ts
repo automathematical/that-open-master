@@ -250,11 +250,19 @@ ifcLoader.onIfcLoaded.add(async (model) => {
   const tree = await createModelTree()
   await classificationsWindow.slots.content.dispose(true)
   classificationsWindow.addChild(tree)
+
+  propertiesProcessor.process(model)
+  highlighter.events.select.onHighlight.add((fragmentMap) => {
+    const expressID = [...Object.values(fragmentMap)[0]][0]
+    propertiesProcessor.renderProperties(model, Number(expressID))
+  })
 })
 
 const toolbar = new OBC.Toolbar(viewer)
 toolbar.addChild(
-  ifcLoader.uiElement.get('main')
+  ifcLoader.uiElement.get('main'),
+  classificationBtn,
+  propertiesProcessor.uiElement.get('main')
 )
 
 viewer.ui.addToolbar(toolbar)
