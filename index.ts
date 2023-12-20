@@ -214,13 +214,22 @@ highlighter.events.select.onClear.add(() => {
 const classifier = new OBC.FragmentClassifier(viewer)
 
 const classificationsWindow = new OBC.FloatingWindow(viewer)
+classificationsWindow.visible = false
 viewer.ui.add(classificationsWindow)
 classificationsWindow.title = "model groups"
+
+const classificationBtn = new OBC.Button(viewer)
+classificationBtn.materialIcon = "account_tree"
+
+classificationBtn.onClick.add(() => {
+  classificationsWindow.visible = !classificationsWindow.visible
+  classificationBtn.active = classificationBtn.visible
+})
 
 async function createModelTree() {
   const fragmentTree = new OBC.FragmentTree(viewer)
   await fragmentTree.init()
-  await fragmentTree.update(["storeys", "entities"])
+  await fragmentTree.update(["models", "storeys", "entities"])
   const tree = fragmentTree.get().uiElement.get("tree")
   fragmentTree.onHovered.add((fragmentMap) => {
     highlighter.highlightByID("hover", fragmentMap)
@@ -234,8 +243,7 @@ async function createModelTree() {
 ifcLoader.onIfcLoaded.add(async (model) => {
   highlighter.update()
 
-  // classifier.byModel()
-  console.log(model);
+  // classifier.byModel("models", model)
 
   classifier.byStorey(model)
   classifier.byEntity(model)
