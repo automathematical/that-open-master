@@ -252,11 +252,8 @@ async function createModelTree() {
   return tree
 }
 
-ifcLoader.onIfcLoaded.add(async (model) => {
-  exportFragments(model)
+async function onModelLoaded(model: FragmentsGroup) {
   highlighter.update()
-
-  // classifier.byModel("models", model)
 
   classifier.byStorey(model)
   classifier.byEntity(model)
@@ -269,11 +266,39 @@ ifcLoader.onIfcLoaded.add(async (model) => {
     const expressID = [...Object.values(fragmentMap)[0]][0]
     propertiesProcessor.renderProperties(model, Number(expressID))
   })
+}
+
+ifcLoader.onIfcLoaded.add(async (model) => {
+  exportFragments(model)
+  onModelLoaded(model)
+})
+
+fragmentManager.onFragmentsLoaded.add((model) => {
+  onModelLoaded(model)
 })
 
 const importFragmentBtn = new OBC.Button(viewer)
 importFragmentBtn.materialIcon = "upload"
 importFragmentBtn.tooltip = "Load Frag"
+
+importFragmentBtn.onClick.add(() => {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.frag'
+  const reader = new FileReader()
+  reader.addEventListener("load", async () => {
+    const binary = reader.result
+    if (!(binary instanceof ArrayBuffer)) { return }
+    const fragmentBinary = new Uint8Array(binary)
+    await fragmentManager.load(fragmentBinary)
+  })
+  input.addEventListener('change', () => {
+    const filesList = input.files
+    if (!filesList) { return }
+    reader.readAsArrayBuffer(filesList[0])
+  })
+  input.click()
+})
 
 const toolbar = new OBC.Toolbar(viewer)
 toolbar.addChild(
