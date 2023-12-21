@@ -241,7 +241,7 @@ classificationBtn.onClick.add(() => {
 async function createModelTree() {
   const fragmentTree = new OBC.FragmentTree(viewer)
   await fragmentTree.init()
-  await fragmentTree.update(["models", "storeys", "entities"])
+  await fragmentTree.update(["storeys", "entities"])
   const tree = fragmentTree.get().uiElement.get("tree")
   fragmentTree.onHovered.add((fragmentMap) => {
     highlighter.highlightByID("hover", fragmentMap)
