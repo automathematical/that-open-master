@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import * as OBC from 'openbim-components'
+import { FragmentsGroup } from 'bim-fragment'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
@@ -125,9 +126,9 @@ if (importProjectsBtn) {
 // resizeViewer()
 
 // BOX OR CUBE GEOMETRY FROM THREE JS LIB
-const boxGeometry = new THREE.BoxGeometry()
-const material = new THREE.MeshStandardMaterial()
-const cube = new THREE.Mesh(boxGeometry, material)
+// const boxGeometry = new THREE.BoxGeometry()
+// const material = new THREE.MeshStandardMaterial()
+// const cube = new THREE.Mesh(boxGeometry, material)
 
 // const directionalLight = new THREE.DirectionalLight()
 // const ambientLight = new THREE.AmbientLight()
@@ -195,7 +196,18 @@ viewer.init()
 cameraComponent.updateAspect()
 rendererComponent.postproduction.enabled = true
 
-scene.add(cube)
+const fragmentManager = new OBC.FragmentManager(viewer)
+function exportFragments(model: FragmentsGroup) {
+  const fragmentsBinary = fragmentManager.export(model)
+  const blob = new Blob([fragmentsBinary])
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${model.name}.frag`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 
 const ifcLoader = new OBC.FragmentIfcLoader(viewer)
 ifcLoader.settings.wasm = {
@@ -241,6 +253,7 @@ async function createModelTree() {
 }
 
 ifcLoader.onIfcLoaded.add(async (model) => {
+  exportFragments(model)
   highlighter.update()
 
   // classifier.byModel("models", model)
