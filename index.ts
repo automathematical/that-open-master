@@ -1,14 +1,13 @@
-import * as THREE from 'three'
 import * as OBC from 'openbim-components'
 import { FragmentsGroup } from 'bim-fragment'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { ErrorMessage } from './src/class/ErrorMessage'
 import { IProject, UserRole, ProjectStatus } from './src/class/Project'
 import { ProjectManager } from './src/class/ProjectManager'
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 
+// import * as THREE from 'three'
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+// import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
+// import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 
 const projectListUI = document.getElementById('projects-list') as HTMLElement
 const projectManager = new ProjectManager(projectListUI)
