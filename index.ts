@@ -203,7 +203,7 @@ function exportFragments(model: FragmentsGroup) {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `${model.name}.frag`
+  a.download = `${model.name.replace(".ifc", '')}.frag`
   a.click()
   URL.revokeObjectURL(url)
 }
@@ -271,11 +271,16 @@ ifcLoader.onIfcLoaded.add(async (model) => {
   })
 })
 
+const importFragmentBtn = new OBC.Button(viewer)
+importFragmentBtn.materialIcon = "upload"
+importFragmentBtn.tooltip = "Load Frag"
+
 const toolbar = new OBC.Toolbar(viewer)
 toolbar.addChild(
   ifcLoader.uiElement.get('main'),
   classificationBtn,
-  propertiesProcessor.uiElement.get('main')
+  propertiesProcessor.uiElement.get('main'),
+  importFragmentBtn
 )
 
 viewer.ui.addToolbar(toolbar)
