@@ -275,6 +275,7 @@ async function onModelLoaded(model: FragmentsGroup) {
 
 ifcLoader.onIfcLoaded.add(async (model) => {
   exportFragments(model)
+  exportJsonProperties(model)
   onModelLoaded(model)
 })
 
@@ -309,12 +310,14 @@ importFragmentBtn.onClick.add(() => {
 })
 
 function exportJsonProperties(model: FragmentsGroup) {
+  console.log("exporting json");
+
   const json = JSON.stringify(model.properties, null, 2)
   const blob = new Blob([json], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `${model.name}`.replace(".ifc", "")
+  a.download = `${model.name.replace(".ifc", "")}.json`
   a.click()
   URL.revokeObjectURL(json)
 }
@@ -329,8 +332,8 @@ function importJsonProperties(model) {
   reader.addEventListener("load", () => {
     const json = reader.result as string
     if (!json) { return }
-    const enrichtModel = { ...model, properties: JSON.parse(json) }
-    onModelLoaded(enrichtModel)
+    const enrichModel = model.properties = JSON.parse(json)
+    onModelLoaded(enrichModel)
     return
   })
   input.addEventListener('change', () => {
