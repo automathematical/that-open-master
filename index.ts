@@ -196,6 +196,7 @@ cameraComponent.updateAspect()
 rendererComponent.postproduction.enabled = true
 
 const fragmentManager = new OBC.FragmentManager(viewer)
+
 function exportFragments(model: FragmentsGroup) {
   const fragmentsBinary = fragmentManager.export(model)
   const blob = new Blob([fragmentsBinary])
@@ -254,17 +255,22 @@ async function createModelTree() {
 async function onModelLoaded(model: FragmentsGroup) {
   highlighter.update()
 
-  classifier.byStorey(model)
-  classifier.byEntity(model)
-  const tree = await createModelTree()
-  await classificationsWindow.slots.content.dispose(true)
-  classificationsWindow.addChild(tree)
+  try {
+    classifier.byStorey(model)
+    classifier.byEntity(model)
+    const tree = await createModelTree()
+    await classificationsWindow.slots.content.dispose(true)
+    classificationsWindow.addChild(tree)
 
-  propertiesProcessor.process(model)
-  highlighter.events.select.onHighlight.add((fragmentMap) => {
-    const expressID = [...Object.values(fragmentMap)[0]][0]
-    propertiesProcessor.renderProperties(model, Number(expressID))
-  })
+    propertiesProcessor.process(model)
+    highlighter.events.select.onHighlight.add((fragmentMap) => {
+      const expressID = [...Object.values(fragmentMap)[0]][0]
+      propertiesProcessor.renderProperties(model, Number(expressID))
+    })
+
+  } catch (error) {
+    alert(error)
+  }
 }
 
 ifcLoader.onIfcLoaded.add(async (model) => {
@@ -274,6 +280,9 @@ ifcLoader.onIfcLoaded.add(async (model) => {
 
 fragmentManager.onFragmentsLoaded.add((model) => {
   onModelLoaded(model)
+})
+fragmentManager.onFragmentsLoaded.add((model) => {
+  importJsonProperties(model)
 })
 
 const importFragmentBtn = new OBC.Button(viewer)
