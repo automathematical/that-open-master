@@ -299,6 +299,39 @@ importFragmentBtn.onClick.add(() => {
   input.click()
 })
 
+function exportJsonProperties(model: FragmentsGroup) {
+  const json = JSON.stringify(model.properties, null, 2)
+  const blob = new Blob([json], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${model.name}`.replace(".ifc", "")
+  a.click()
+  URL.revokeObjectURL(json)
+}
+
+function importJsonProperties(model) {
+  console.log("importing");
+
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = 'application/json'
+  const reader = new FileReader()
+  reader.addEventListener("load", () => {
+    const json = reader.result as string
+    if (!json) { return }
+    const enrichtModel = { ...model, properties: JSON.parse(json) }
+    onModelLoaded(enrichtModel)
+    return
+  })
+  input.addEventListener('change', () => {
+    const filesList = input.files
+    if (!filesList) { return }
+    reader.readAsText(filesList[0])
+  })
+  input.click()
+}
+
 const toolbar = new OBC.Toolbar(viewer)
 toolbar.addChild(
   ifcLoader.uiElement.get('main'),
