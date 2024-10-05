@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as Router from 'react-router-dom'
 import { ProjectManager } from '../class/ProjectManager'
+import { ThreeViewer } from './ThreeViewer'
 
 interface Props {
   projectManager: ProjectManager
@@ -87,7 +88,7 @@ export function ProjectDetailsPage(props: Props) {
                 </div>
                 <div>
                   <p style={{ color: '#969696', fontSize: 'var(--font-sm)' }}>Finish Date</p>
-                  <p data-project-info='finishDate'>{project?.finishDate.toDateString()}</p>
+                  <p data-project-info='finishDate'>date</p>
                 </div>
               </div>
               <div
@@ -175,11 +176,7 @@ export function ProjectDetailsPage(props: Props) {
             </div>
           </div>
         </div>
-        <div
-          id='viewer-container'
-          className='dashboard-card'
-          style={{ minWidth: 0, position: 'relative' }}
-        />
+        <ThreeViewer />
       </div>
     </div>
   )

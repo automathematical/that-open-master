@@ -3,6 +3,8 @@ import { IProject, Project, UserRole, ProjectStatus } from '../class/Project'
 import { ProjectManager } from '../class/ProjectManager'
 import { ProjectCard } from './ProjectCard'
 import * as Router from 'react-router-dom'
+import SearchBox from './SearchBox'
+import Empty from './Empty'
 
 interface Props {
   projectManager: ProjectManager
@@ -27,7 +29,7 @@ export function ProjectsPage(props: Props) {
       </Router.Link>
     )
   })
-  k
+
   React.useEffect(() => {
     console.log('projects state updated', projects)
   }, [projects])
@@ -82,6 +84,10 @@ export function ProjectsPage(props: Props) {
 
   const onExportClick = () => {
     props.projectManager.exportProject()
+  }
+
+  const onProjectSearch = (value: string) => {
+    setProjects(props.projectManager.filterProjects(value))
   }
 
   return (
@@ -182,6 +188,7 @@ export function ProjectsPage(props: Props) {
       </dialog>
       <header>
         <h2>Projects</h2>
+        <SearchBox onChange={(value) => onProjectSearch(value)} />
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <button
             onClick={onImportClick}
@@ -200,7 +207,7 @@ export function ProjectsPage(props: Props) {
           </button>
         </div>
       </header>
-      <div id='projects-list'>{projectCards}</div>
+      <div id='projects-list'>{projects.length > 0 ? projectCards : <Empty />}</div>
     </div>
   )
 }

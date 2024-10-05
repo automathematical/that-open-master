@@ -253,7 +253,7 @@ select:focus {
   padding: 20px 40px;
   gap: 30px;
   grid-template-columns: 475px 1fr;
-  height: 100%;
+  height: 80vh;
 }
 
 .btn-secondary {
