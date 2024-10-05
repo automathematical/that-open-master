@@ -1,111 +1,42 @@
 import * as OBC from 'openbim-components'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom/client'
+import { Sidebar } from './src/components/Sidebar'
+import { ProjectPage } from './src/components/ProjectPage'
+import { ProjectDetails } from './src/components/ProjectDetails'
+import { UserPage } from './src/components/UserPage'
+import * as THREE from 'three'
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { FragmentsGroup } from 'bim-fragment'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
 import { ErrorMessage } from './src/class/ErrorMessage'
 import { IProject, UserRole, ProjectStatus } from './src/class/Project'
 import { ProjectManager } from './src/class/ProjectManager'
 
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
-
-const projectListUI = document.getElementById('projects-list') as HTMLElement
-const projectManager = new ProjectManager(projectListUI)
-
-function toggleModal(active: boolean, id: string) {
-  const modal = document.getElementById(id)
-  if (modal && modal instanceof HTMLDialogElement) {
-    active ? modal.showModal() : modal.close()
-  } else {
-    console.warn("the provided modal wasn't found. ID: ", id);
-  }
-}
-
-// this is the document ..
-// open the project modal by clicking the new project button
-const newProjectBtn = document.getElementById('new-project-btn')
-if (newProjectBtn) {
-  newProjectBtn.addEventListener('click', () => {
-    toggleModal(true, 'new-project-modal')
-  })
-} else {
-  console.log('New projects button was not found')
-}
-
-// function updateForm(id) {
-//   toggleModal(true, id)
-// }
-
-// get the html form and new formData -> projectData
-const projectForm = document.getElementById('new-project-form')
-if (projectForm && projectForm instanceof HTMLFormElement) {
-  projectForm.addEventListener('submit', (e) => {
-    e.preventDefault()
-    const formData = new FormData(projectForm)
-    const projectData: IProject = {
-      name: formData.get('name') as string,
-      description: formData.get('description') as string,
-      status: formData.get('status') as ProjectStatus,
-      userRole: formData.get('userRole') as UserRole,
-      finishDate: new Date(formData.get("finishDate") as string)
-    }
-
-    try {
-      const project = projectManager.newProject(projectData)
-
-      projectForm.reset()
-      toggleModal(false, "new-project-modal")
-
-      const editProjectBtn = document.getElementById('edit-project-btn')
-      if (editProjectBtn) {
-        editProjectBtn.addEventListener('click', () => {
-          if (project.id != null) {
-            console.log('project deleted');
-            projectManager.deleteProject(project.id)
-          }
-          // toggleModal(true, 'new-project-modal')
-        })
-      }
-
-      // Cancel button
-      projectForm.addEventListener("click", () => {
-        toggleModal(false, "new-project-modal")
-      })
-    } catch (error) {
-      projectForm.reset();
-      (new ErrorMessage(projectForm, error)).showError()
-    }
-  })
-} else {
-  console.log('The Project form was not found')
-}
+const rootElement = document.getElementById('app') as HTMLDivElement
+const appRoot = ReactDOM.createRoot(rootElement)
+appRoot.render(
+  <>
+    <Sidebar />
+    <ProjectPage />
+    <ProjectDetails />
+    <UserPage />
+  </>
+)
 
 const newToDoBtn = document.getElementById('new-todo-btn')
 if (newToDoBtn) {
   newToDoBtn.addEventListener('click', () => {
-    console.log('new todooo');
-  })
-}
-
-const exportProjectsBtn = document.getElementById("export-projects-btn")
-if (exportProjectsBtn) {
-  exportProjectsBtn.addEventListener("click", () => {
-    projectManager.exportProject()
-  })
-}
-
-const importProjectsBtn = document.getElementById("import-projects-btn")
-if (importProjectsBtn) {
-  importProjectsBtn.addEventListener("click", () => {
-    projectManager.importFromJSON()
+    console.log('new todooo')
   })
 }
 
 //three js viewer
 const threeScene = new THREE.Scene()
 
-const viewerContainerElement = document.getElementById("viewer-container") as HTMLElement
+const viewerContainerElement = document.getElementById('viewer-container') as HTMLElement
 
 const camera = new THREE.PerspectiveCamera(75)
 camera.position.z = 5
@@ -121,7 +52,7 @@ function resizeViewer() {
   camera.updateProjectionMatrix
 }
 
-window.addEventListener("resize", resizeViewer)
+window.addEventListener('resize', resizeViewer)
 
 resizeViewer()
 
@@ -139,7 +70,6 @@ threeScene.add(directionalLight, ambientLight)
 const cameraControls = new OrbitControls(camera, viewerContainerElement)
 
 function renderScene() {
-
   renderer.render(threeScene, camera)
   requestAnimationFrame(renderScene)
 }
@@ -150,16 +80,16 @@ const axes = new THREE.AxesHelper()
 const grid = new THREE.GridHelper()
 grid.material.transparent = true
 grid.material.opacity = 0.4
-grid.material.color = new THREE.Color("#808080")
+grid.material.color = new THREE.Color('#808080')
 
 threeScene.add(axes, grid)
 
 const gui = new GUI()
 
-const cubeControls = gui.addFolder("Cube")
-cubeControls.add(cube.position, "x", -10, 10, 1)
-cubeControls.add(cube.position, "y", -10, 10, 1)
-cubeControls.add(cube.position, "z", -10, 10, 1)
+const cubeControls = gui.addFolder('Cube')
+cubeControls.add(cube.position, 'x', -10, 10, 1)
+cubeControls.add(cube.position, 'y', -10, 10, 1)
+cubeControls.add(cube.position, 'z', -10, 10, 1)
 cubeControls.add(cube, 'visible')
 
 // const objLoader = new OBJLoader()
@@ -201,16 +131,15 @@ function exportFragments(model: FragmentsGroup) {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `${model.name.replace(".ifc", '')}.frag`
+  a.download = `${model.name.replace('.ifc', '')}.frag`
   a.click()
   URL.revokeObjectURL(url)
 }
 
-
 const ifcLoader = new OBC.FragmentIfcLoader(viewer)
 ifcLoader.settings.wasm = {
-  path: "https://unpkg.com/web-ifc@0.0.43/",
-  absolute: true
+  path: 'https://unpkg.com/web-ifc@0.0.43/',
+  absolute: true,
 }
 
 const highlighter = new OBC.FragmentHighlighter(viewer)
@@ -226,10 +155,10 @@ const classifier = new OBC.FragmentClassifier(viewer)
 const classificationsWindow = new OBC.FloatingWindow(viewer)
 classificationsWindow.visible = false
 viewer.ui.add(classificationsWindow)
-classificationsWindow.title = "model groups"
+classificationsWindow.title = 'model groups'
 
 const classificationBtn = new OBC.Button(viewer)
-classificationBtn.materialIcon = "account_tree"
+classificationBtn.materialIcon = 'account_tree'
 
 classificationBtn.onClick.add(() => {
   classificationsWindow.visible = !classificationsWindow.visible
@@ -239,13 +168,13 @@ classificationBtn.onClick.add(() => {
 async function createModelTree() {
   const fragmentTree = new OBC.FragmentTree(viewer)
   await fragmentTree.init()
-  await fragmentTree.update(["storeys", "entities"])
-  const tree = fragmentTree.get().uiElement.get("tree")
+  await fragmentTree.update(['storeys', 'entities'])
+  const tree = fragmentTree.get().uiElement.get('tree')
   fragmentTree.onHovered.add((fragmentMap) => {
-    highlighter.highlightByID("hover", fragmentMap)
+    highlighter.highlightByID('hover', fragmentMap)
   })
   fragmentTree.onSelected.add((fragmentMap) => {
-    highlighter.highlightByID("select", fragmentMap)
+    highlighter.highlightByID('select', fragmentMap)
   })
   return tree
 }
@@ -265,7 +194,6 @@ async function onModelLoaded(model: FragmentsGroup) {
       const expressID = [...Object.values(fragmentMap)[0]][0]
       propertiesProcessor.renderProperties(model, Number(expressID))
     })
-
   } catch (error) {
     alert(error)
   }
@@ -285,58 +213,66 @@ fragmentManager.onFragmentsLoaded.add((model) => {
 })
 
 const importFragmentBtn = new OBC.Button(viewer)
-importFragmentBtn.materialIcon = "upload"
-importFragmentBtn.tooltip = "Load Frag"
+importFragmentBtn.materialIcon = 'upload'
+importFragmentBtn.tooltip = 'Load Frag'
 
 importFragmentBtn.onClick.add(() => {
   const input = document.createElement('input')
   input.type = 'file'
   input.accept = '.frag'
   const reader = new FileReader()
-  reader.addEventListener("load", async () => {
+  reader.addEventListener('load', async () => {
     const binary = reader.result
-    if (!(binary instanceof ArrayBuffer)) { return }
+    if (!(binary instanceof ArrayBuffer)) {
+      return
+    }
     const fragmentBinary = new Uint8Array(binary)
     await fragmentManager.load(fragmentBinary)
   })
   input.addEventListener('change', () => {
     const filesList = input.files
-    if (!filesList) { return }
+    if (!filesList) {
+      return
+    }
     reader.readAsArrayBuffer(filesList[0])
   })
   input.click()
 })
 
 function exportJsonProperties(model: FragmentsGroup) {
-  console.log("exporting json");
+  console.log('exporting json')
 
   const json = JSON.stringify(model.properties, null, 2)
   const blob = new Blob([json], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `${model.name.replace(".ifc", "")}.json`
+  a.download = `${model.name.replace('.ifc', '')}.json`
   a.click()
   URL.revokeObjectURL(json)
 }
 
 function importJsonProperties(model) {
-  console.log("importing");
+  console.log('importing')
 
   const input = document.createElement('input')
   input.type = 'file'
   input.accept = 'application/json'
   const reader = new FileReader()
-  reader.addEventListener("load", () => {
+  reader.addEventListener('load', () => {
     const json = reader.result as string
-    if (!json) { return }
-    const enrichModel = model.properties = JSON.parse(json)
+    if (!json) {
+      return
+    }
+    const enrichModel = (model.properties = JSON.parse(json))
     onModelLoaded(enrichModel)
     return
   })
   input.addEventListener('change', () => {
     const filesList = input.files
-    if (!filesList) { return }
+    if (!filesList) {
+      return
+    }
     reader.readAsText(filesList[0])
   })
   input.click()

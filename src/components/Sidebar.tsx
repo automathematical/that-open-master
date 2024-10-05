@@ -1,6 +1,6 @@
-import React from 'react'
+import * as React from 'react'
 
-const Sidebar = () => {
+export function Sidebar() {
   return (
     <aside id='sidebar'>
       <img
@@ -19,5 +19,3 @@ const Sidebar = () => {
     </aside>
   )
 }
-
-export default Sidebar

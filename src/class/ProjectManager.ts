@@ -2,18 +2,17 @@ import { IProject, Project } from "./Project"
 
 export class ProjectManager {
     list: Project[] = []
-    ui: HTMLElement
+    onProjectCreated = (project: Project) => { }
+    onProjectDeleted = (project: Project) => { }
 
-    constructor(container: HTMLElement) {
-        this.ui = container
-        const project = this.newProject({
+    constructor() {
+        this.newProject({
             name: "Default Project",
             description: "This is just a default app project",
             status: "pending",
             userRole: "architect",
             finishDate: new Date()
         })
-        project.ui.click()
     }
 
     newProject(data: IProject) {
@@ -33,13 +32,6 @@ export class ProjectManager {
         const projectsPage = document.getElementById("projects-page")
         const detailsPage = document.getElementById("project-details")
         const peoplePage = document.getElementById('users-page')
-        project.ui.addEventListener("click", () => {
-            if (!projectsPage || !detailsPage) { return }
-            projectsPage.style.display = "none"
-            detailsPage.style.display = "flex"
-            this.setDetailsPage(project)
-            this.setRandomColor(project)
-        })
 
         const projectsNavBtn = document.getElementById('projects-navbtn')
         if (projectsNavBtn) {
@@ -60,8 +52,10 @@ export class ProjectManager {
             })
         }
 
-        this.ui.append(project.ui)
-        this.list.push(project)
+        const newProject = new Project(data)
+        this.list.push(newProject)
+        this.onProjectCreated(newProject)
+
         return project
     }
 
@@ -111,11 +105,11 @@ export class ProjectManager {
     deleteProject(id: string) {
         const project = this.getProject(id)
         if (!project) { return }
-        project.ui.remove()
         const remaining = this.list.filter((project) => {
             return project.id !== id
         })
         this.list = remaining
+        this.onProjectDeleted(project)
     }
 
     calcTotalCost() {
