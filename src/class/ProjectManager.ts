@@ -16,45 +16,23 @@ export class ProjectManager {
     }
 
     newProject(data: IProject) {
-        const projectNames = this.list.map((project) => {
-            return project.name
-        })
-        const nameInUse = projectNames.includes(data.name)
-        if (nameInUse) {
-            throw new Error(`A project with the name "${data.name}" already exists`)
-        }
-        const nameLength = data.name.length
-        if (nameLength < 5) {
-            throw new Error('Name is too short')
-        }
+        // const projectNames = this.list.map((project) => {
+        //     return project.name
+        // })
+        // const nameInUse = projectNames.includes(data.name)
+        // if (nameInUse) {
+        //     throw new Error(`A project with the name "${data.name}" already exists`)
+        // }
+        // const nameLength = data.name.length
+        // if (nameLength < 5) {
+        //     throw new Error('Name is too short')
+        // }
 
         const project = new Project(data)
-        const projectsPage = document.getElementById("projects-page")
-        const detailsPage = document.getElementById("project-details")
-        const peoplePage = document.getElementById('users-page')
-
-        const projectsNavBtn = document.getElementById('projects-navbtn')
-        if (projectsNavBtn) {
-            projectsNavBtn.addEventListener("click", () => {
-                if (!projectsPage || !detailsPage) { return }
-                projectsPage.style.display = "flex"
-                detailsPage.style.display = "none"
-            })
-        }
-
-        const usersNavBtn = document.getElementById('users-navbtn')
-        if (usersNavBtn) {
-            usersNavBtn.addEventListener("click", () => {
-                if (!projectsPage || !detailsPage || !peoplePage) { return }
-                peoplePage.style.display = 'flex'
-                projectsPage.style.display = "none"
-                detailsPage.style.display = "none"
-            })
-        }
-
-        const newProject = new Project(data)
-        this.list.push(newProject)
-        this.onProjectCreated(newProject)
+        this.list.push(project)
+        this.onProjectCreated(project)
+        // this.setDetailsPage(project)
+        // this.setRandomColor(project)
 
         return project
     }

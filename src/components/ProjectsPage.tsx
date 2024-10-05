@@ -2,26 +2,32 @@ import React from 'react'
 import { IProject, Project, UserRole, ProjectStatus } from '../class/Project'
 import { ProjectManager } from '../class/ProjectManager'
 import { ProjectCard } from './ProjectCard'
+import * as Router from 'react-router-dom'
 
-export function ProjectPage() {
-  const [projectManager] = React.useState(new ProjectManager())
-  const [projects, setProjects] = React.useState<Project[]>(projectManager.list)
-  projectManager.onProjectCreated = () => {
-    setProjects([...projectManager.list])
+interface Props {
+  projectManager: ProjectManager
+}
+
+export function ProjectsPage(props: Props) {
+  const [projects, setProjects] = React.useState<Project[]>(props.projectManager.list)
+  props.projectManager.onProjectCreated = () => {
+    setProjects([...props.projectManager.list])
+    console.log('Project created')
   }
-  projectManager.onProjectDeleted = () => {
-    setProjects([...projectManager.list])
+  props.projectManager.onProjectDeleted = () => {
+    setProjects([...props.projectManager.list])
   }
 
   const projectCards = projects.map((project) => {
     return (
-      <ProjectCard
-        key={project.id}
-        project={project}
-      />
+      <Router.Link
+        to={`/project/${project.id}`}
+        key={project.id}>
+        <ProjectCard project={project} />
+      </Router.Link>
     )
   })
-
+  k
   React.useEffect(() => {
     console.log('projects state updated', projects)
   }, [projects])
@@ -58,7 +64,7 @@ export function ProjectPage() {
     }
 
     try {
-      const project = projectManager.newProject(projectData)
+      const project = props.projectManager.newProject(projectData)
       projectForm.reset()
       const modal = document.getElementById('new-project-modal')
       if (!(modal && modal instanceof HTMLDialogElement)) {
@@ -71,11 +77,11 @@ export function ProjectPage() {
   }
 
   const onImportClick = () => {
-    projectManager.importFromJSON()
+    props.projectManager.importFromJSON()
   }
 
   const onExportClick = () => {
-    projectManager.exportProject()
+    props.projectManager.exportProject()
   }
 
   return (

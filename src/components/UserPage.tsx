@@ -4,8 +4,7 @@ export function UserPage() {
   return (
     <div
       className='page'
-      id='users-page'
-      style={{ display: 'none' }}>
+      id='users-page'>
       <dialog id='new-user-modal'>
         <form>
           <h2>New User</h2>
