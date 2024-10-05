@@ -1,10 +1,12 @@
-import React from 'react'
-import { IProject, Project, UserRole, ProjectStatus } from '../class/Project'
-import { ProjectManager } from '../class/ProjectManager'
+import React, { useEffect } from 'react'
+import { IProject, Project, UserRole, ProjectStatus } from '../classes/Project'
+import { ProjectManager } from '../classes/ProjectManager'
 import { ProjectCard } from './ProjectCard'
 import * as Router from 'react-router-dom'
+import * as Firestore from 'firebase/firestore'
 import SearchBox from './SearchBox'
 import Empty from './Empty'
+import { firebaseDB } from '../firebase'
 
 interface Props {
   projectManager: ProjectManager
@@ -19,6 +21,33 @@ export function ProjectsPage(props: Props) {
   props.projectManager.onProjectDeleted = () => {
     setProjects([...props.projectManager.list])
   }
+
+  const getFirebaseProjects = async () => {
+    const projectCollection = Firestore.collection(firebaseDB, '/projects') as Firestore.CollectionReference<IProject>
+    const firebaseProjects = await Firestore.getDocs(projectCollection)
+    for (const doc of firebaseProjects.docs) {
+      const data = doc.data()
+      const project: IProject = {
+        ...data,
+        finishDate: (data.finishDate as unknown as Firestore.Timestamp).toDate(),
+      }
+      try {
+        props.projectManager.newProject(project, doc.id)
+      } catch (error) {
+        const existingProject = props.projectManager.list.find((p) => p.name === project.name)
+        if (existingProject) {
+          props.projectManager.updateProject(existingProject)
+          throw new Error('project with samen name already exists')
+        } else {
+          props.projectManager.newProject(project, doc.id)
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    getFirebaseProjects()
+  }, [])
 
   const projectCards = projects.map((project) => {
     return (

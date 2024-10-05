@@ -24,12 +24,10 @@ export class Project implements IProject {
     progress: number = 0
     id: string
 
-    constructor(data: IProject) {
+    constructor(data: IProject, id: uuidv4) {
         for (const key in data) {
             this[key] = data[key]
         }
-        this.id = uuidv4()
+        this.id = id
     }
-
-
 }

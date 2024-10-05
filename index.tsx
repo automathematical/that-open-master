@@ -12,9 +12,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { FragmentsGroup } from 'bim-fragment'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
-import { ErrorMessage } from './src/class/ErrorMessage'
-import { IProject, UserRole, ProjectStatus } from './src/class/Project'
-import { ProjectManager } from './src/class/ProjectManager'
+import { ErrorMessage } from './src/classes/ErrorMessage'
+import { IProject, UserRole, ProjectStatus } from './src/classes/Project'
+import { ProjectManager } from './src/classes/ProjectManager'
 
 const projectManager = new ProjectManager()
 

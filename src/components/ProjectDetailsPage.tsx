@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Router from 'react-router-dom'
-import { ProjectManager } from '../class/ProjectManager'
+import { ProjectManager } from '../classes/ProjectManager'
 import { ThreeViewer } from './ThreeViewer'
 
 interface Props {

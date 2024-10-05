@@ -1,5 +1,5 @@
 import React from 'react'
-import { Project } from '../class/Project'
+import { Project } from '../classes/Project'
 
 interface Props {
   project: Project

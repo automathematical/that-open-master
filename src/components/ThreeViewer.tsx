@@ -71,7 +71,7 @@ export function ThreeViewer() {
 
     threeScene.add(axes, grid)
 
-    gui = new GUI()
+    // gui = new GUI()
 
     objLoader = new OBJLoader()
     mtlLoader = new MTLLoader()

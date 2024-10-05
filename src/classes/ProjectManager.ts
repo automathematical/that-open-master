@@ -5,15 +5,6 @@ export class ProjectManager {
     onProjectCreated = (project: Project) => { }
     onProjectDeleted = (project: Project) => { }
 
-    constructor() {
-        this.newProject({
-            name: "Default Project",
-            description: "This is just a default app project",
-            status: "pending",
-            userRole: "architect",
-            finishDate: new Date()
-        })
-    }
 
     filterProjects = (value: string) => {
         const filteredProjects = this.list.filter((project) => {
@@ -22,32 +13,37 @@ export class ProjectManager {
         return filteredProjects
     }
 
-    newProject(data: IProject) {
-        // const projectNames = this.list.map((project) => {
-        //     return project.name
-        // })
-        // const nameInUse = projectNames.includes(data.name)
-        // if (nameInUse) {
-        //     throw new Error(`A project with the name "${data.name}" already exists`)
-        // }
-        // const nameLength = data.name.length
-        // if (nameLength < 5) {
-        //     throw new Error('Name is too short')
-        // }
+    newProject(data: IProject, id?: string) {
+        const projectNames = this.list.map((project) => {
+            return project.name
+        })
+        const nameInUse = projectNames.includes(data.name)
+        if (nameInUse) {
+            throw new Error(`A project with the name "${data.name}" already exists`)
+        }
+        const nameLength = data.name.length
+        if (nameLength < 5) {
+            throw new Error('Name is too short')
+        }
 
-        const project = new Project(data)
+        const project = new Project(data, id)
         this.list.push(project)
         this.onProjectCreated(project)
-        // this.setDetailsPage(project)
-        // this.setRandomColor(project)
+        this.setDetailsPage(project)
+        this.setRandomColor(project)
 
         return project
     }
 
-    // updateProject(project: Project) {
-    //     console.log('edit clicked');
-    //     this.deleteProject(project.id)
-    // }
+    updateProject(project: Project) {
+        const index = this.list.findIndex((p) => p.id === project.id);
+        if (index === -1) {
+            throw new Error(`Project with id "${project.id}" not found`);
+        }
+        this.list[index] = project;
+        this.setDetailsPage(project);
+        this.setRandomColor(project);
+    }
 
     private setDetailsPage(project: Project) {
         const detailsPage = document.getElementById('project-details')
