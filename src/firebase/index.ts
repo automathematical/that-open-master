@@ -1,5 +1,5 @@
+import * as Firestore from 'firebase/firestore'
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyD7egn55TYeUXQakvnaptQSvECX2I7BNjQ",
@@ -11,4 +11,22 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const firebaseDB = getFirestore();
+export const firebaseDB = Firestore.getFirestore();
+
+export function getCollection<T>(path: string) {
+    return Firestore.collection(firebaseDB, path) as Firestore.CollectionReference<T>;
+}
+
+// export function deleteDocument<T>(collection: Firestore.CollectionReference<T>, docId: string) {
+//     return Firestore.deleteDoc(Firestore.doc(collection, docId));
+// }
+
+export async function deleteDocument(path: string, id: string) {
+    const doc = Firestore.doc(firebaseDB, `${path}/${id}`);
+    await Firestore.deleteDoc(doc);
+}
+
+export async function updateDocument<T extends Record<string, any>>(path: string, id: string, data: T) {
+    const doc = Firestore.doc(firebaseDB, `${path}/${id}`);
+    await Firestore.updateDoc(doc, data);
+}

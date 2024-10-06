@@ -6,11 +6,13 @@ import * as Router from 'react-router-dom'
 import * as Firestore from 'firebase/firestore'
 import SearchBox from './SearchBox'
 import Empty from './Empty'
-import { firebaseDB } from '../firebase'
+import { getCollection } from '../firebase'
 
 interface Props {
   projectManager: ProjectManager
 }
+
+const projectCollection = getCollection<IProject>('/projects')
 
 export function ProjectsPage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(props.projectManager.list)
@@ -18,12 +20,8 @@ export function ProjectsPage(props: Props) {
     setProjects([...props.projectManager.list])
     console.log('Project created')
   }
-  props.projectManager.onProjectDeleted = () => {
-    setProjects([...props.projectManager.list])
-  }
 
   const getFirebaseProjects = async () => {
-    const projectCollection = Firestore.collection(firebaseDB, '/projects') as Firestore.CollectionReference<IProject>
     const firebaseProjects = await Firestore.getDocs(projectCollection)
     for (const doc of firebaseProjects.docs) {
       const data = doc.data()
@@ -38,8 +36,6 @@ export function ProjectsPage(props: Props) {
         if (existingProject) {
           props.projectManager.updateProject(existingProject)
           throw new Error('project with samen name already exists')
-        } else {
-          props.projectManager.newProject(project, doc.id)
         }
       }
     }
@@ -95,6 +91,7 @@ export function ProjectsPage(props: Props) {
     }
 
     try {
+      Firestore.addDoc(projectCollection, projectData)
       const project = props.projectManager.newProject(projectData)
       projectForm.reset()
       const modal = document.getElementById('new-project-modal')

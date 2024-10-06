@@ -3,8 +3,8 @@ import { IProject, Project } from "./Project"
 export class ProjectManager {
     list: Project[] = []
     onProjectCreated = (project: Project) => { }
-    onProjectDeleted = (project: Project) => { }
-
+    onProjectDeleted = (id: string) => { }
+    onProjectUpdated = (project: Project) => { }
 
     filterProjects = (value: string) => {
         const filteredProjects = this.list.filter((project) => {
@@ -35,15 +35,6 @@ export class ProjectManager {
         return project
     }
 
-    updateProject(project: Project) {
-        const index = this.list.findIndex((p) => p.id === project.id);
-        if (index === -1) {
-            throw new Error(`Project with id "${project.id}" not found`);
-        }
-        this.list[index] = project;
-        this.setDetailsPage(project);
-        this.setRandomColor(project);
-    }
 
     private setDetailsPage(project: Project) {
         const detailsPage = document.getElementById('project-details')
@@ -90,7 +81,18 @@ export class ProjectManager {
             return project.id !== id
         })
         this.list = remaining
-        this.onProjectDeleted(project)
+        this.onProjectDeleted(id)
+    }
+
+    updateProject(project: Project) {
+        const index = this.list.findIndex((p) => p.id === project.id);
+        if (index === -1) {
+            throw new Error(`Project with id "${project.id}" not found`);
+        }
+        this.list[index] = project;
+        this.onProjectUpdated(project);
+        this.setDetailsPage(project);
+        this.setRandomColor(project);
     }
 
     calcTotalCost() {

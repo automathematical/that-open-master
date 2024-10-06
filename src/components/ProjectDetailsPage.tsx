@@ -2,6 +2,8 @@ import * as React from 'react'
 import * as Router from 'react-router-dom'
 import { ProjectManager } from '../classes/ProjectManager'
 import { ThreeViewer } from './ThreeViewer'
+import { deleteDocument, updateDocument } from '../firebase'
+import { IProject } from '../classes/Project'
 
 interface Props {
   projectManager: ProjectManager
@@ -17,6 +19,18 @@ export function ProjectDetailsPage(props: Props) {
     return <p>Project with ID {routeParams.id} not found</p>
   }
 
+  const navigateTo = Router.useNavigate()
+  props.projectManager.onProjectDeleted = async (id) => {
+    await deleteDocument('/projects', id)
+    navigateTo('/')
+  }
+
+  props.projectManager.updateProject = async (project) => {
+    await updateDocument<Partial<IProject>>('/projects', project.id, { name: 'new name' })
+    // navigateTo(`/project/${project.id}`)
+    navigateTo('/')
+  }
+
   return (
     <div
       className='page'
@@ -26,6 +40,11 @@ export function ProjectDetailsPage(props: Props) {
           <h2 data-project-info='name'>Hospital Center</h2>
           <p style={{ color: '#969696' }}>Community hospital located at downtown</p>
         </div>
+        <button
+          onClick={() => props.projectManager.deleteProject(project.id)}
+          style={{ backgroundColor: 'red' }}>
+          Delete project
+        </button>
       </header>
       <div className='main-page-content'>
         <div style={{ display: 'flex', flexDirection: 'column', rowGap: 30 }}>
@@ -57,6 +76,7 @@ export function ProjectDetailsPage(props: Props) {
                   .join('')}
               </p>
               <button
+                onClick={() => props.projectManager.updateProject(project)}
                 id='edit-project-btn'
                 className='btn-secondary'>
                 <p style={{ width: '100%' }}>Edit</p>
