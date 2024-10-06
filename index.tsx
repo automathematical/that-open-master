@@ -5,7 +5,7 @@ import * as Router from 'react-router-dom'
 import { Sidebar } from './src/components/Sidebar'
 import { ProjectsPage } from './src/components/ProjectsPage'
 import { ProjectDetailsPage } from './src/components/ProjectDetailsPage'
-import { UserPage } from './src/components/UserPage'
+import { UsersPage } from './src/components/UsersPage'
 import * as THREE from 'three'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
@@ -32,6 +32,10 @@ appRoot.render(
         <Router.Route
           path='/project/:id'
           element={<ProjectDetailsPage projectManager={projectManager} />}
+        />
+        <Router.Route
+          path='/users'
+          element={<UsersPage />}
         />
       </Router.Routes>
     </Router.BrowserRouter>

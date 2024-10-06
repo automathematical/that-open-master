@@ -17,7 +17,7 @@ export function Sidebar() {
             <span className='material-icons-round'>apartment</span>Projects
           </li>
         </Router.Link>
-        <Router.Link to={'/user'}>
+        <Router.Link to={'/users'}>
           <li id='users-navbtn'>
             <span className='material-icons-round'>people</span>Users
           </li>
