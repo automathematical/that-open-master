@@ -23,26 +23,26 @@ export function ProjectCard({ project }: Props) {
             .join('')}
         </p>
         <div>
-          <h5>{project.name}</h5>
-          <p>{project.description}</p>
+          <bim-label style={{ fontSize: '16px', color: '#fff', fontWeight: 'bold' }}>{project.name}</bim-label>
+          <bim-label style={{ color: '#fff' }}>{project.description}</bim-label>
         </div>
       </div>
       <div className='card-content'>
         <div className='card-property'>
-          <p style={{ color: '#969696' }}>Status</p>
-          <p>{project.status}</p>
+          <bim-label>Status</bim-label>
+          <bim-label style={{ color: '#fff' }}>{project.status}</bim-label>
         </div>
         <div className='card-property'>
-          <p style={{ color: '#969696' }}>Cost</p>
-          <p>{project.cost}</p>
+          <bim-label>Cost</bim-label>
+          <bim-label style={{ color: '#fff' }}>{project.cost}</bim-label>
         </div>
         <div className='card-property'>
-          <p style={{ color: '#969696' }}>Role</p>
-          <p>{project.userRole}</p>
+          <bim-label>Role</bim-label>
+          <bim-label style={{ color: '#fff' }}>{project.userRole}</bim-label>
         </div>
         <div className='card-property'>
-          <p style={{ color: '#969696' }}>Estimated Progress</p>
-          <p>{project.progress}</p>
+          <bim-label>Estimated Progress</bim-label>
+          <bim-label style={{ color: '#fff' }}>{project.progress}</bim-label>
         </div>
       </div>
       `

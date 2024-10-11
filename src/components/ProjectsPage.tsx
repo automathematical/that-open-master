@@ -7,6 +7,7 @@ import * as Firestore from 'firebase/firestore'
 import SearchBox from './SearchBox'
 import Empty from './Empty'
 import { getCollection } from '../firebase'
+import * as BUI from '@thatopen/ui'
 
 interface Props {
   projectManager: ProjectManager
@@ -116,9 +117,46 @@ export function ProjectsPage(props: Props) {
     setProjects(props.projectManager.filterProjects(value))
   }
 
+  const importBtn = BUI.Component.create<BUI.Button>(() => {
+    return BUI.html`
+      <bim-button
+        id='import-projects-btn'
+        @click=${onImportClick}
+        icon='iconoir:import'></bim-button>`
+  })
+
+  const exportBtn = BUI.Component.create<BUI.Button>(() => {
+    return BUI.html`
+      <bim-button
+        id='import-projects-btn'
+        @click=${onExportClick}
+        icon='ph:export'></bim-button>
+    `
+  })
+
+  const newProjectBtn = BUI.Component.create<BUI.Button>(() => {
+    return BUI.html` 
+      <bim-button
+        @click=${onNewProjectClick}
+        id='new-project-btn'
+        icon='fluent:add-20-regular'></bim-button>
+    `
+  })
+
+  React.useEffect(() => {
+    const projectControls = document.getElementById('project-page-controls')
+    projectControls?.appendChild(importBtn)
+    projectControls?.appendChild(exportBtn)
+    projectControls?.appendChild(newProjectBtn)
+
+    const cancelBtn = document.getElementById('cancel-btn')
+    cancelBtn?.addEventListener('click', onCancelClick)
+  }, [])
+
   return (
     <div
       className='page'
+      k
       id='projects-page'>
       <dialog id='new-project-modal'>
         <form
@@ -128,14 +166,14 @@ export function ProjectsPage(props: Props) {
           <div className='input-list'>
             <div className='form-field-container'>
               <label>
-                <span className='material-icons-round'>apartment</span>Name
+                <bim-label className='material-icons-round'>apartment</bim-label>Name
               </label>
-              <input
+              <bim-text-input
                 name='name'
                 type='text'
                 placeholder="What's the name of your project?"
               />
-              <p
+              <bim-label
                 style={{
                   color: 'gray',
                   fontSize: 'var(--font-sm)',
@@ -143,12 +181,12 @@ export function ProjectsPage(props: Props) {
                   fontStyle: 'italic',
                 }}>
                 TIP: Give it a short name
-              </p>
+              </bim-label>
               <p id='error' />
             </div>
             <div className='form-field-container'>
               <label>
-                <span className='material-icons-round'>subject</span>Description
+                <bim-label className='material-icons-round'>subject</bim-label>Description
               </label>
               <textarea
                 name='description'
@@ -159,35 +197,43 @@ export function ProjectsPage(props: Props) {
               />
             </div>
             <div className='form-field-container'>
-              <label>
-                <span className='material-icons-round'>person</span>Role
-              </label>
-              <select name='userRole'>
-                <option>Architect</option>
-                <option>Engineer</option>
-                <option>Developer</option>
-              </select>
+              <bim-label
+                icon='material-symbols:person'
+                style={{ marginBottom: 5 }}>
+                Role
+              </bim-label>
+              <bim-dropdown name='userRole'>
+                <bim-option
+                  label='Architect'
+                  checked></bim-option>
+                <bim-option label='Engineer'></bim-option>
+                <bim-option label='Developer'></bim-option>
+              </bim-dropdown>
             </div>
             <div className='form-field-container'>
-              <label>
-                <span className='material-icons-round'>not_listed_location</span>
+              <bim-label
+                icon='material-symbols:info'
+                style={{ marginBottom: 5 }}>
                 Status
-              </label>
-              <select name='status'>
-                <option>Pending</option>
-                <option>Active</option>
-                <option>Finished</option>
-              </select>
+              </bim-label>
+              <bim-dropdown name='status'>
+                <bim-option
+                  label='Pending'
+                  checked></bim-option>
+                <bim-option label='Active'></bim-option>
+                <bim-option label='Finished'></bim-option>
+              </bim-dropdown>
             </div>
             <div className='form-field-container'>
-              <label htmlFor='finishDate'>
-                <span className='material-icons-round'>calendar_month</span>
+              <bim-label
+                icon='mdi:calendar'
+                name='finishDate'>
                 Finish Date
-              </label>
-              <input
+              </bim-label>
+
+              <bim-text-input
                 name='finishDate'
                 type='date'
-                defaultValue='2024-01-01'
               />
             </div>
             <div
@@ -196,13 +242,10 @@ export function ProjectsPage(props: Props) {
                 margin: '10px 0px 10px auto',
                 columnGap: 10,
               }}>
-              <button
-                onClick={onCancelClick}
+              <bim-button
                 type='button'
-                value='cancel'
-                style={{ backgroundColor: 'transparent' }}>
-                Cancel
-              </button>
+                label='cancel'
+                id='cancel-btn'></bim-button>
               <button
                 type='submit'
                 style={{ backgroundColor: 'rgb(18, 145, 18)' }}>
@@ -213,25 +256,11 @@ export function ProjectsPage(props: Props) {
         </form>
       </dialog>
       <header>
-        <h2>Projects</h2>
+        <bim-label>Projects</bim-label>
         <SearchBox onChange={(value) => onProjectSearch(value)} />
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <button
-            onClick={onImportClick}
-            id='import-projects-btn'>
-            <span className='material-icons-round action-icon'>download</span>
-          </button>
-          <button
-            onClick={onExportClick}
-            id='export-projects-btn'>
-            <span className='material-icons-round action-icon'>upload</span>
-          </button>
-          <button
-            onClick={onNewProjectClick}
-            id='new-project-btn'>
-            <span className='material-icons-round'>add</span>New Project
-          </button>
-        </div>
+        <div
+          style={{ display: 'flex', flexDirection: 'row' }}
+          id='project-page-controls'></div>
       </header>
       <div id='projects-list'>{projects.length > 0 ? projectCards : <Empty />}</div>
     </div>

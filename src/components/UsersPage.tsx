@@ -1,14 +1,6 @@
 import React from 'react'
 import * as BUI from '@thatopen/ui'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'bim-grid': any
-    }
-  }
-}
-
 export function UsersPage() {
   const userTable = BUI.Component.create<BUI.Table>(() => {
     const onTableCreated = (element?: Element) => {
@@ -77,6 +69,14 @@ export function UsersPage() {
     `
   })
 
+  const footer = BUI.Component.create<BUI.Component>(() => {
+    return BUI.html`
+           <div style="display: flex; justify-center:center;">
+           <bim-label>copyright 2021</bim-label>
+           </div>
+            `
+  })
+
   const gridLayout: BUI.Layouts = {
     primary: {
       template: `
@@ -87,23 +87,26 @@ export function UsersPage() {
     `,
       elements: {
         header: (() => {
-          const header = document.createElement('div')
-          header.style.backgroundColor = '#641b1b66'
-          return header
+          const inputBox = BUI.Component.create<BUI.TextInput>(() => {
+            return BUI.html`
+            <bim-text-input style="padding: 8px" placeholder="Search Users"></bim-text-input>
+            `
+          })
+
+          inputBox.addEventListener('input', () => {
+            userTable.queryString = inputBox.value
+          })
+
+          return inputBox
         })(),
         sidebar,
         content,
-        footer: (() => {
-          const footer = document.createElement('div')
-          footer.style.backgroundColor = '#ff400066'
-          return footer
-        })(),
+        footer,
       },
     },
   }
 
   React.useEffect(() => {
-    BUI.Manager.init()
     const grid = document.getElementById('bimGrid') as BUI.Grid
     grid.layouts = gridLayout
     grid.layout = 'primary'

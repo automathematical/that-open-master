@@ -4,6 +4,7 @@ import { ProjectManager } from '../classes/ProjectManager'
 import { ThreeViewer } from './ThreeViewer'
 import { deleteDocument, updateDocument } from '../firebase'
 import { IProject } from '../classes/Project'
+import * as BUI from '@thatopen/ui'
 
 interface Props {
   projectManager: ProjectManager
@@ -31,20 +32,41 @@ export function ProjectDetailsPage(props: Props) {
     navigateTo('/')
   }
 
+  const onTableCreated = (element?: Element) => {
+    if (!element) {
+      return
+    }
+    const toDoTable = element as BUI.Table
+
+    toDoTable.data = [
+      {
+        data: {
+          tasks: 'Make anything here as you want, even something longer.',
+          date: 'Fri, 20 sep',
+        },
+      },
+    ]
+  }
+
   return (
     <div
       className='page'
       id='project-details'>
       <header>
         <div>
-          <h2 data-project-info='name'>Hospital Center</h2>
-          <p style={{ color: '#969696' }}>Community hospital located at downtown</p>
+          <bim-label
+            style={{ color: '#fff', fontSize: 'var(--font-xl)' }}
+            data-project-info='name'>
+            {project.name}
+          </bim-label>
+          <bim-label style={{ color: '#969696' }}>{project.description}</bim-label>
         </div>
-        <button
-          onClick={() => props.projectManager.deleteProject(project.id)}
-          style={{ backgroundColor: 'red' }}>
-          Delete project
-        </button>
+        <div>
+          <bim-button
+            label='delete'
+            icon='material-symbols:delete'
+            onClick={() => props.projectManager.deleteProject(project.id)}></bim-button>
+        </div>
       </header>
       <div className='main-page-content'>
         <div style={{ display: 'flex', flexDirection: 'column', rowGap: 30 }}>
@@ -75,17 +97,22 @@ export function ProjectDetailsPage(props: Props) {
                   .map((n) => n[0])
                   .join('')}
               </p>
-              <button
-                onClick={() => props.projectManager.updateProject(project)}
-                id='edit-project-btn'
-                className='btn-secondary'>
-                <p style={{ width: '100%' }}>Edit</p>
-              </button>
+              <div>
+                <bim-button
+                  style={{ color: 'white' }}
+                  label='Edit'
+                  icon='material-symbols:edit'
+                  onClick={() => props.projectManager.updateProject(project)}></bim-button>
+              </div>
             </div>
             <div style={{ padding: '0 30px' }}>
               <div>
-                <h5 data-project-info='cardName'>{project?.name}</h5>
-                <p data-project-info='description'>{project?.description}</p>
+                <bim-label
+                  style={{ color: '#fff', fontSize: 'var(--font-sm)' }}
+                  data-project-info='cardName'>
+                  {project?.name}
+                </bim-label>
+                <bim-label data-project-info='description'>{project?.description}</bim-label>
               </div>
               <div
                 style={{
@@ -95,20 +122,20 @@ export function ProjectDetailsPage(props: Props) {
                   justifyContent: 'space-between',
                 }}>
                 <div>
-                  <p style={{ color: '#969696', fontSize: 'var(--font-sm)' }}>Status</p>
-                  <p data-project-info='status'>{project?.status}</p>
+                  <bim-label style={{ color: '#fff', fontSize: 'var(--font-sm)' }}>Status</bim-label>
+                  <bim-label data-project-info='status'>{project?.status}</bim-label>
                 </div>
                 <div>
-                  <p style={{ color: '#969696', fontSize: 'var(--font-sm)' }}>Cost</p>
-                  <p data-project-info='cost'>{project?.cost}</p>
+                  <bim-label style={{ color: '#fff', fontSize: 'var(--font-sm)' }}>Cost</bim-label>
+                  <bim-label data-project-info='cost'>{project?.cost}</bim-label>
                 </div>
                 <div>
-                  <p style={{ color: '#969696', fontSize: 'var(--font-sm)' }}>Role</p>
-                  <p data-project-info='userRole'>{project?.userRole}</p>
+                  <bim-label style={{ color: '#fff', fontSize: 'var(--font-sm)' }}>Role</bim-label>
+                  <bim-label data-project-info='userRole'>{project?.userRole}</bim-label>
                 </div>
                 <div>
-                  <p style={{ color: '#969696', fontSize: 'var(--font-sm)' }}>Finish Date</p>
-                  <p data-project-info='finishDate'>date</p>
+                  <bim-label style={{ color: '#fff', fontSize: 'var(--font-sm)' }}>Finish Date</bim-label>
+                  <bim-label data-project-info='finishDate'>date</bim-label>
                 </div>
               </div>
               <div
@@ -139,7 +166,7 @@ export function ProjectDetailsPage(props: Props) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <h4>To-Do</h4>
+              <bim-label style={{ color: '#fff', fontSize: 'var(--font-lg)' }}>To-Do</bim-label>
               <div
                 style={{
                   display: 'flex',
@@ -148,23 +175,21 @@ export function ProjectDetailsPage(props: Props) {
                   columnGap: 20,
                 }}>
                 <div style={{ display: 'flex', alignItems: 'center', columnGap: 10 }}>
-                  <span className='material-icons-round'>search</span>
-                  <input
+                  <bim-label className='material-icons-round'>search</bim-label>
+                  <bim-text-input
                     type='text'
                     placeholder="Search To-Do's by name"
-                    style={{ width: '100%' }}
                   />
                 </div>
-                <button>
-                  <span
-                    id='new-todo-btn'
-                    className='material-icons-round'>
-                    add
-                  </span>{' '}
-                </button>
+                <bim-button
+                  id='new-todo-btn'
+                  label='add'
+                  icon='material-symbols:add'>
+                  {' '}
+                </bim-button>
               </div>
             </div>
-            <div
+            {/* <div
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -193,6 +218,11 @@ export function ProjectDetailsPage(props: Props) {
                   <p style={{ textWrap: 'nowrap', marginLeft: 10 }}>Fri, 20 sep</p>
                 </div>
               </div>
+            </div> */}
+            <div>
+              <bim-table
+                id='todo-table'
+                ref={onTableCreated}></bim-table>
             </div>
           </div>
         </div>

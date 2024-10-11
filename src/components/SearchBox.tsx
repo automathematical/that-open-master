@@ -1,17 +1,22 @@
 import React from 'react'
+import * as BUI from '@thatopen/ui'
 
 interface Props {
   onChange: (value: string) => void
 }
 
 function SearchBox(props: Props) {
+  const searchInput = document.getElementById('search-input') as BUI.TextInput
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      props.onChange(searchInput.value)
+    })
+  }
   return (
     <div style={{ display: 'flex', alignItems: 'center', columnGap: 10, width: '40%' }}>
-      <input
-        onChange={(e) => props.onChange(e.target.value)}
-        type='text'
-        placeholder='Search projects by name...'
-        style={{ width: '100%', height: '40px', backgroundColor: 'var(--background-100)' }}></input>
+      <bim-text-input
+        placeholder='search'
+        id='search-input'></bim-text-input>
     </div>
   )
 }

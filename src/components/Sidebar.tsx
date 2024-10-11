@@ -14,12 +14,20 @@ export function Sidebar() {
       <ul id='nav-buttons'>
         <Router.Link to={'/project'}>
           <li id='projects-navbtn'>
-            <span className='material-icons-round'>apartment</span>Projects
+            <bim-label
+              style={{ color: '#fff' }}
+              icon='material-symbols:apartment'>
+              Projects
+            </bim-label>
           </li>
         </Router.Link>
         <Router.Link to={'/users'}>
           <li id='users-navbtn'>
-            <span className='material-icons-round'>people</span>Users
+            <bim-label
+              style={{ color: '#fff' }}
+              icon='mdi:user'>
+              Users
+            </bim-label>
           </li>
         </Router.Link>
       </ul>

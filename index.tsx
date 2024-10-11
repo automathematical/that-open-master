@@ -15,6 +15,23 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
 import { ErrorMessage } from './src/classes/ErrorMessage'
 import { IProject, UserRole, ProjectStatus } from './src/classes/Project'
 import { ProjectManager } from './src/classes/ProjectManager'
+import * as BUI from '@thatopen/ui'
+
+BUI.Manager.init()
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'bim-grid': any
+      'bim-label': any
+      'bim-button': any
+      'bim-text-input': any
+      'bim-table': any
+      'bim-dropdown': any
+      'bim-option': any
+    }
+  }
+}
 
 const projectManager = new ProjectManager()
 
