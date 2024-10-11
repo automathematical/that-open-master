@@ -19,7 +19,6 @@ export function ProjectsPage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(props.projectManager.list)
   props.projectManager.onProjectCreated = () => {
     setProjects([...props.projectManager.list])
-    console.log('Project created')
   }
 
   const getFirebaseProjects = async () => {
@@ -34,10 +33,10 @@ export function ProjectsPage(props: Props) {
         props.projectManager.newProject(project, doc.id)
       } catch (error) {
         const existingProject = props.projectManager.list.find((p) => p.name === project.name)
-        if (existingProject) {
-          props.projectManager.updateProject(existingProject)
-          throw new Error('project with samen name already exists')
-        }
+        // if (existingProject) {
+        //   props.projectManager.updateProject(existingProject)
+        //   throw new Error('project with samen name already exists')
+        // }
       }
     }
   }
@@ -56,9 +55,9 @@ export function ProjectsPage(props: Props) {
     )
   })
 
-  React.useEffect(() => {
-    console.log('projects state updated', projects)
-  }, [projects])
+  // React.useEffect(() => {
+  //   console.log('projects state updated', projects)
+  // }, [projects])
 
   const onNewProjectClick = () => {
     const modal = document.getElementById('new-project-modal')

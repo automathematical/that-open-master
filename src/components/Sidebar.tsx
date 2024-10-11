@@ -12,7 +12,7 @@ export function Sidebar() {
         />
       </Router.Link>
       <ul id='nav-buttons'>
-        <Router.Link to={'/project'}>
+        <Router.Link to={'/'}>
           <li id='projects-navbtn'>
             <bim-label
               style={{ color: '#fff' }}
