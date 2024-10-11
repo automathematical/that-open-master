@@ -156,7 +156,6 @@ export function ProjectsPage(props: Props) {
   return (
     <div
       className='page'
-      k
       id='projects-page'>
       <dialog id='new-project-modal'>
         <form

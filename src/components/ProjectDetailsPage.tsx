@@ -32,6 +32,15 @@ export function ProjectDetailsPage(props: Props) {
     navigateTo('/')
   }
 
+  React.useEffect(() => {
+    const newToDoBtn = document.getElementById('new-todo-btn')
+    if (newToDoBtn) {
+      newToDoBtn.addEventListener('click', () => {
+        console.log('new todooo')
+      })
+    }
+  }, [])
+
   const onTableCreated = (element?: Element) => {
     if (!element) {
       return
@@ -184,9 +193,7 @@ export function ProjectDetailsPage(props: Props) {
                 <bim-button
                   id='new-todo-btn'
                   label='add'
-                  icon='material-symbols:add'>
-                  {' '}
-                </bim-button>
+                  icon='material-symbols:add'></bim-button>
               </div>
             </div>
             {/* <div
