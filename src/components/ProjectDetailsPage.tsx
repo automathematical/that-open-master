@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Router from 'react-router-dom'
 import { ProjectManager } from '../classes/ProjectManager'
-import { ThreeViewer } from './ThreeViewer'
+import { IFCViewer } from './IFCViewer'
 import { deleteDocument, updateDocument } from '../firebase'
 import { IProject } from '../classes/Project'
 import * as BUI from '@thatopen/ui'
@@ -233,7 +233,7 @@ export function ProjectDetailsPage(props: Props) {
             </div>
           </div>
         </div>
-        <ThreeViewer />
+        <IFCViewer />
       </div>
     </div>
   )

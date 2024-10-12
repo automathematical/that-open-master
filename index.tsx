@@ -1,4 +1,3 @@
-import * as OBC from 'openbim-components'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import * as Router from 'react-router-dom'
@@ -6,14 +5,6 @@ import { Sidebar } from './src/components/Sidebar'
 import { ProjectsPage } from './src/components/ProjectsPage'
 import { ProjectDetailsPage } from './src/components/ProjectDetailsPage'
 import { UsersPage } from './src/components/UsersPage'
-import * as THREE from 'three'
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { FragmentsGroup } from 'bim-fragment'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
-import { ErrorMessage } from './src/classes/ErrorMessage'
-import { IProject, UserRole, ProjectStatus } from './src/classes/Project'
 import { ProjectManager } from './src/classes/ProjectManager'
 import * as BUI from '@thatopen/ui'
 
@@ -29,6 +20,9 @@ declare global {
       'bim-table': any
       'bim-dropdown': any
       'bim-option': any
+      'bim-viewport': any
+      'bim-toolbar-section': any
+      'bim-toolbar': any
     }
   }
 }
