@@ -7,24 +7,24 @@ import * as CUI from '@thatopen/ui-obc'
 
 export function IFCViewer() {
   const components = new OBC.Components()
-  const setViewer = () => {
+  const setViewer = async () => {
     const worlds = components.get(OBC.Worlds)
+    console.log(worlds)
 
-    const world = worlds.create<OBC.SimpleScene, OBC.SimpleCamera, OBCF.PostproductionRenderer>()
-
-    const viewerContainer = document.getElementById('viewer-container') as HTMLElement
+    const world = worlds.create<OBC.SimpleScene, OBC.OrthoPerspectiveCamera, OBC.SimpleRenderer>()
+    console.log(world)
 
     world.scene = new OBC.SimpleScene(components)
-    const rendererComponent = new OBCF.PostproductionRenderer(components, viewerContainer)
+    world.scene.setup()
+
+    const viewerContainer = document.getElementById('viewer-container') as HTMLCanvasElement
+    const rendererComponent = new OBC.SimpleRenderer(components, viewerContainer)
     world.renderer = rendererComponent
-    const cameraComponent = new OBC.SimpleCamera(components)
+
+    const cameraComponent = new OBC.OrthoPerspectiveCamera(components)
     world.camera = cameraComponent
 
     components.init()
-
-    world.scene.setup()
-
-    world.renderer.postproduction.enabled = true
 
     // const material = new THREE.MeshLambertMaterial({ color: '#6528D7' })
     // const geometry = new THREE.BoxGeometry()
@@ -41,11 +41,16 @@ export function IFCViewer() {
       world.scene.three.add(model)
     })
 
+    // const fragments = new OBC.FragmentsManager(components)
+    // const file = await fetch('https://thatopen.github.io/engine_components/resources/small.frag')
+    // const data = await file.arrayBuffer()
+    // const buffer = new Uint8Array(data)
+    // const model = fragments.load(buffer)
+    // world.scene.three.add(model)
+
     //! Highlighter is not working
     const highlighter = components.get(OBCF.Highlighter)
-    highlighter.setup({ world })
-
-    // highlighter.zoomToSelection = true
+    // highlighter.setup({ world })
 
     viewerContainer.addEventListener('resize', () => {
       rendererComponent.resize()
@@ -54,13 +59,12 @@ export function IFCViewer() {
   }
 
   const setupUI = () => {
-    const viewerContainer = document.getElementById('viewer-container') as HTMLElement
+    const viewerContainer = document.getElementById('viewer-container') as HTMLCanvasElement
     if (!viewerContainer) return
 
     const floatingGrid = BUI.Component.create<BUI.Grid>(() => {
       return BUI.html`
         <bim-grid floating style="padding: 20px">
-
          </bim-grid>
       `
     })
@@ -102,5 +106,5 @@ export function IFCViewer() {
     }
   }, [])
 
-  return <bim-viewport id='viewer-container' />
+  return <bim-viewport id='viewer-container'></bim-viewport>
 }
