@@ -7,50 +7,40 @@ import * as CUI from '@thatopen/ui-obc'
 
 export function IFCViewer() {
   const components = new OBC.Components()
-  const setViewer = async () => {
-    const worlds = components.get(OBC.Worlds)
-    console.log(worlds)
+  const fragments = components.get(OBC.FragmentsManager)
 
-    const world = worlds.create<OBC.SimpleScene, OBC.OrthoPerspectiveCamera, OBC.SimpleRenderer>()
-    console.log(world)
+  const setViewer = () => {
+    const worlds = components.get(OBC.Worlds)
+
+    const world = worlds.create<OBC.SimpleScene, OBC.SimpleCamera, OBC.SimpleRenderer>()
+    components.init()
 
     world.scene = new OBC.SimpleScene(components)
     world.scene.setup()
 
-    const viewerContainer = document.getElementById('viewer-container') as HTMLCanvasElement
+    const viewerContainer = document.getElementById('viewer-container') as HTMLElement
     const rendererComponent = new OBC.SimpleRenderer(components, viewerContainer)
     world.renderer = rendererComponent
 
     const cameraComponent = new OBC.OrthoPerspectiveCamera(components)
     world.camera = cameraComponent
 
-    components.init()
-
-    // const material = new THREE.MeshLambertMaterial({ color: '#6528D7' })
-    // const geometry = new THREE.BoxGeometry()
-    // const cube = new THREE.Mesh(geometry, material)
-    // world.scene.three.add(cube)
-
     world.camera.controls.setLookAt(12, 6, 8, 0, 0, 0)
+
+    const grids = components.get(OBC.Grids)
+    grids.create(world)
+
+    fragments.onFragmentsLoaded.add((model) => {
+      world.scene.three.add(model)
+      console.log('model:', model)
+    })
 
     const IfcLoader = components.get(OBC.IfcLoader)
     IfcLoader.setup()
 
-    const fragmentsManager = components.get(OBC.FragmentsManager)
-    fragmentsManager.onFragmentsLoaded.add((model) => {
-      world.scene.three.add(model)
-    })
-
-    // const fragments = new OBC.FragmentsManager(components)
-    // const file = await fetch('https://thatopen.github.io/engine_components/resources/small.frag')
-    // const data = await file.arrayBuffer()
-    // const buffer = new Uint8Array(data)
-    // const model = fragments.load(buffer)
-    // world.scene.three.add(model)
-
-    //! Highlighter is not working
+    //! Highlighter.setup(object) is not working -> Uncaught (in promise) TypeError: e.get(...).list.set is not a function
     const highlighter = components.get(OBCF.Highlighter)
-    // highlighter.setup({ world })
+    highlighter.setup({ world })
 
     viewerContainer.addEventListener('resize', () => {
       rendererComponent.resize()
@@ -59,7 +49,7 @@ export function IFCViewer() {
   }
 
   const setupUI = () => {
-    const viewerContainer = document.getElementById('viewer-container') as HTMLCanvasElement
+    const viewerContainer = document.getElementById('viewer-container') as HTMLElement
     if (!viewerContainer) return
 
     const floatingGrid = BUI.Component.create<BUI.Grid>(() => {
@@ -99,12 +89,13 @@ export function IFCViewer() {
   }
 
   React.useEffect(() => {
-    setViewer()
     setupUI()
+    setViewer()
     return () => {
       components.dispose()
+      fragments.dispose()
     }
   }, [])
 
-  return <bim-viewport id='viewer-container'></bim-viewport>
+  return <bim-viewport id='viewer-container' />
 }
