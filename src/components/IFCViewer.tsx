@@ -120,14 +120,20 @@ export function IFCViewer() {
 
     const elementPropertyPanel = BUI.Component.create<BUI.Panel>(() => {
       const highlighter = components.get(OBCF.Highlighter)
-      highlighter.events.select.onHighlight.add(() => {
+
+      highlighter.events.select.onHighlight.add((fragmentIdMap) => {
         if (!floatingGrid) return
         floatingGrid.layout = 'second'
       })
 
+      highlighter.events.select.onClear.add(() => {
+        if (!floatingGrid) return
+        floatingGrid.layout = 'main'
+      })
+
       return BUI.html`
       <bim-panel>
-      <bim-panel-section name="property" label="Property Information" icon='solar:document-bold' fixed>
+      <bim-panel-section name="property" label="Property Information" icon="solar:document-bold" fixed>
       </bim-panel-section>
        </bim-panel>
     `
@@ -165,7 +171,7 @@ export function IFCViewer() {
           toolbar,
         },
       },
-      secondary: {
+      second: {
         template: `
           "empty elementPropertyPanel" 1fr
           "toolbar toolbar" auto
