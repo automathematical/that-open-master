@@ -20,11 +20,11 @@
     "vite": "^4.5.5"
   },
   "dependencies": {
-    "@thatopen/components": "^2.3.0",
-    "@thatopen/components-front": "~2.3.0",
+    "@thatopen/components": "~2.3.4",
+    "@thatopen/components-front": "~2.3.3",
     "@thatopen/fragments": "~2.3.0",
     "@thatopen/ui": "~2.3.0",
-    "@thatopen/ui-obc": "~2.3.0",
+    "@thatopen/ui-obc": "~2.3.2",
     "bim-fragment": "1.0.22",
     "firebase": "10.5.2",
     "openbim-components": "1.1.5",

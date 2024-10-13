@@ -33,14 +33,13 @@ export function IFCViewer() {
     fragments.onFragmentsLoaded.add((model) => {
       world.scene.three.add(model)
       console.log('model:', model)
+      highlighter.setup({ world })
     })
 
     const IfcLoader = components.get(OBC.IfcLoader)
     IfcLoader.setup()
 
-    //! Highlighter.setup(object) is not working -> Uncaught (in promise) TypeError: e.get(...).list.set is not a function
     const highlighter = components.get(OBCF.Highlighter)
-    highlighter.setup({ world })
 
     viewerContainer.addEventListener('resize', () => {
       rendererComponent.resize()
