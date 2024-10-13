@@ -23,6 +23,8 @@ declare global {
       'bim-viewport': any
       'bim-toolbar-section': any
       'bim-toolbar': any
+      'bim-panel': any
+      'bim-panel-section': any
     }
   }
 }
