@@ -119,28 +119,56 @@ export function IFCViewer() {
     })
 
     const elementPropertyPanel = BUI.Component.create<BUI.Panel>(() => {
-      console.log('elementPropertyPanel function is hit')
-
       const [propsTable, updatePropsTable] = CUI.tables.elementProperties({ components, fragmentIdMap: {} })
       const highlighter = components.get(OBCF.Highlighter)
 
       if (highlighter.isSetup) {
-        console.log('highlighter events select hit')
-
         highlighter.events.select.onHighlight.add((fragmentIdMap) => {
           if (!floatingGrid) return
           floatingGrid.layout = 'second'
+          updatePropsTable({ fragmentIdMap })
+          propsTable.expanded = false
         })
 
         highlighter.events.select.onClear.add(() => {
+          updatePropsTable({ fragmentIdMap: {} })
           if (!floatingGrid) return
           floatingGrid.layout = 'main'
         })
       }
 
+      const search = (e: CustomEvent) => {
+        const input = e.target as BUI.TextInput
+        propsTable.queryString = input.value
+      }
+
+      return BUI.html`
+      <bim-panel>
+      <bim-panel-section name="World" label="World" icon="solar:document-bold" fixed>
+      <bim-text-input @input=${search} placeholder="Search" icon="mdi:magnify"></bim-text-input>
+      ${propsTable}
+      </bim-panel-section>
+       </bim-panel>
+    `
+    })
+
+    const onWorldsUpdate = (e: CustomEvent) => {
+      if (!floatingGrid) return
+      floatingGrid.layout = 'world'
+    }
+
+    const worldPanel = BUI.Component.create<BUI.Panel>(() => {
+      const [worldTable] = CUI.tables.worldsConfiguration({ components })
+
+      const search = (e: CustomEvent) => {
+        const input = e.target as BUI.TextInput
+        worldTable.queryString = input.value
+      }
       return BUI.html`
       <bim-panel>
       <bim-panel-section name="Property" label="Property Information" icon="solar:document-bold" fixed>
+      <bim-text-input @input=${search} placeholder="Search" icon="mdi:magnify"></bim-text-input>
+      ${worldTable}
       </bim-panel-section>
        </bim-panel>
     `
@@ -150,6 +178,10 @@ export function IFCViewer() {
       const [loadIfcBtn] = CUI.buttons.loadIfc({ components: components })
       return BUI.html`
         <bim-toolbar style="justify-self: center">
+        <bim-toolbar-section label="App">
+        <bim-button icon="tabler:brush" label="World" @click=${onWorldsUpdate}></bim-button>
+        </bim-toolbar-section>
+
         <bim-toolbar-section label="Import">
         ${loadIfcBtn}
         </bim-toolbar-section>
@@ -185,6 +217,17 @@ export function IFCViewer() {
         elements: {
           toolbar,
           elementPropertyPanel,
+        },
+      },
+      world: {
+        template: `
+          "empty worldPanel" 1fr
+          "toolbar toolbar" auto
+          /1fr 20rem
+     `,
+        elements: {
+          toolbar,
+          worldPanel,
         },
       },
     }
