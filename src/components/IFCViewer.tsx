@@ -10,7 +10,7 @@ export function IFCViewer() {
   const components = new OBC.Components()
   let fragmentModel: FragmentsGroup | undefined
 
-  const setViewer = () => {
+  const setViewer = async () => {
     const worlds = components.get(OBC.Worlds)
 
     const world = worlds.create<OBC.SimpleScene, OBC.SimpleCamera, OBC.SimpleRenderer>()
@@ -40,12 +40,12 @@ export function IFCViewer() {
 
       fragmentModel = model
     })
+    const highlighter = components.get(OBCF.Highlighter)
+    await highlighter.setup({ world })
+    highlighter.zoomToSelection = true
 
     const IfcLoader = components.get(OBC.IfcLoader)
-    IfcLoader.setup()
-
-    const highlighter = components.get(OBCF.Highlighter)
-    highlighter.setup({ world })
+    await IfcLoader.setup()
 
     viewerContainer.addEventListener('resize', () => {
       rendererComponent.resize()
@@ -119,21 +119,28 @@ export function IFCViewer() {
     })
 
     const elementPropertyPanel = BUI.Component.create<BUI.Panel>(() => {
+      console.log('elementPropertyPanel function is hit')
+
+      const [propsTable, updatePropsTable] = CUI.tables.elementProperties({ components, fragmentIdMap: {} })
       const highlighter = components.get(OBCF.Highlighter)
 
-      highlighter.events.select.onHighlight.add((fragmentIdMap) => {
-        if (!floatingGrid) return
-        floatingGrid.layout = 'second'
-      })
+      if (highlighter.isSetup) {
+        console.log('highlighter events select hit')
 
-      highlighter.events.select.onClear.add(() => {
-        if (!floatingGrid) return
-        floatingGrid.layout = 'main'
-      })
+        highlighter.events.select.onHighlight.add((fragmentIdMap) => {
+          if (!floatingGrid) return
+          floatingGrid.layout = 'second'
+        })
+
+        highlighter.events.select.onClear.add(() => {
+          if (!floatingGrid) return
+          floatingGrid.layout = 'main'
+        })
+      }
 
       return BUI.html`
       <bim-panel>
-      <bim-panel-section name="property" label="Property Information" icon="solar:document-bold" fixed>
+      <bim-panel-section name="Property" label="Property Information" icon="solar:document-bold" fixed>
       </bim-panel-section>
        </bim-panel>
     `
@@ -147,15 +154,13 @@ export function IFCViewer() {
         ${loadIfcBtn}
         </bim-toolbar-section>
         <bim-toolbar-section label="Selection">
-<bim-button icon="material-symbols:visibility-outline" label="Visibility" @click=${onToggleVisibility}></bim-button>
-<bim-button icon="mdi:filter" label="Isolate" @click=${onIsolate}></bim-button>
-<bim-button icon="tabler:eye-filled" label="Show All" @click=${onShowAll}></bim-button>
+        <bim-button icon="material-symbols:visibility-outline" label="Visibility" @click=${onToggleVisibility}></bim-button>
+        <bim-button icon="mdi:filter" label="Isolate" @click=${onIsolate}></bim-button> 
+        <bim-button icon="tabler:eye-filled" label="Show All" @click=${onShowAll}></bim-button>
         </bim-toolbar-section>
         <bim-toolbar-section label="Properties">
         <bim-button icon="clarity:list-line" label="Show" @click=${onShowProperties}></bim-button>
-
         </bim-toolbar-section>
-
         </bim-toolbar>
       `
     })
@@ -189,8 +194,8 @@ export function IFCViewer() {
   }
 
   React.useEffect(() => {
-    setupUI()
     setViewer()
+    setupUI()
     return () => {
       if (components) components.dispose()
       if (fragmentModel) {
