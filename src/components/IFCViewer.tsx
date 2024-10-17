@@ -43,16 +43,19 @@ export function IFCViewer() {
       await indexer.process(model)
 
       const classifier = components.get(OBC.Classifier)
-      await classifier.bySpatialStructure(model)
+      await classifier.byPredefinedType(model)
       classifier.byEntity(model)
-
-      console.log(classifier.list)
 
       const classifications = [
         { system: 'entities', label: 'Entities' },
-        { system: 'spatialStructures', label: 'Spatial Containers' },
+        { system: 'predefinedTypes', label: 'predefined Types' },
       ]
-      if (updateClassificationsTree({ classifications })) fragmentModel = model
+
+      if (updateClassificationsTree) {
+        updateClassificationsTree({ classifications })
+      }
+
+      fragmentModel = model
     })
 
     const highlighter = components.get(OBCF.Highlighter)
@@ -167,7 +170,7 @@ export function IFCViewer() {
     `
     })
 
-    const onClassifierUpdate = (e: CustomEvent) => {
+    const onClassifier = (e: CustomEvent) => {
       if (!floatingGrid) return
       if (floatingGrid.layout !== 'classifier') {
         floatingGrid.layout = 'classifier'
@@ -178,8 +181,8 @@ export function IFCViewer() {
 
     const classifierPanel = BUI.Component.create<BUI.Panel>(() => {
       return BUI.html`
-      <bim-panel>
-      <bim-panel-section name="classifier" label="Classifier" icon="solar:document-bold" fixed>
+      <bim-panel label="Classification Tree">
+      <bim-panel-section name="classifier" label="Classifications" icon="solar:document-bold" fixed>
       <bim-label>Classifications</bim-label>
       ${classificationsTree}
       </bim-panel-section>
@@ -229,7 +232,7 @@ export function IFCViewer() {
         <bim-button icon="clarity:list-line" label="Show" @click=${onShowProperties}></bim-button>
         </bim-toolbar-section>
         <bim-toolbar-section label="Groups">
-        <bim-button icon="tabler:eye-filled" label="Classifier" @click=${onClassifierUpdate}></bim-button>
+        <bim-button icon="tabler:eye-filled" label="Classifier" @click=${onClassifier}></bim-button>
         </bim-toolbar-section>
         </bim-toolbar>
       `
