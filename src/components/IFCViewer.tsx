@@ -9,8 +9,12 @@ import { FragmentsGroup } from '@thatopen/fragments'
 export function IFCViewer() {
   const components = new OBC.Components()
   let fragmentModel: FragmentsGroup | undefined
+  const [classificationsTree, updateClassificationsTree] = CUI.tables.classificationTree({
+    components,
+    classifications: [],
+  })
 
-  const setViewer = async () => {
+  const setViewer = () => {
     const worlds = components.get(OBC.Worlds)
 
     const world = worlds.create<OBC.SimpleScene, OBC.SimpleCamera, OBC.SimpleRenderer>()
@@ -38,14 +42,25 @@ export function IFCViewer() {
       const indexer = components.get(OBC.IfcRelationsIndexer)
       await indexer.process(model)
 
-      fragmentModel = model
+      const classifier = components.get(OBC.Classifier)
+      await classifier.bySpatialStructure(model)
+      classifier.byEntity(model)
+
+      console.log(classifier.list)
+
+      const classifications = [
+        { system: 'entities', label: 'Entities' },
+        { system: 'spatialStructures', label: 'Spatial Containers' },
+      ]
+      if (updateClassificationsTree({ classifications })) fragmentModel = model
     })
+
     const highlighter = components.get(OBCF.Highlighter)
-    await highlighter.setup({ world })
+    highlighter.setup({ world })
     highlighter.zoomToSelection = true
 
     const IfcLoader = components.get(OBC.IfcLoader)
-    await IfcLoader.setup()
+    IfcLoader.setup()
 
     viewerContainer.addEventListener('resize', () => {
       rendererComponent.resize()
@@ -152,6 +167,26 @@ export function IFCViewer() {
     `
     })
 
+    const onClassifierUpdate = (e: CustomEvent) => {
+      if (!floatingGrid) return
+      if (floatingGrid.layout !== 'classifier') {
+        floatingGrid.layout = 'classifier'
+      } else {
+        floatingGrid.layout = 'main'
+      }
+    }
+
+    const classifierPanel = BUI.Component.create<BUI.Panel>(() => {
+      return BUI.html`
+      <bim-panel>
+      <bim-panel-section name="classifier" label="Classifier" icon="solar:document-bold" fixed>
+      <bim-label>Classifications</bim-label>
+      ${classificationsTree}
+      </bim-panel-section>
+       </bim-panel>
+    `
+    })
+
     const onWorldsUpdate = (e: CustomEvent) => {
       if (!floatingGrid) return
       floatingGrid.layout = 'world'
@@ -193,6 +228,9 @@ export function IFCViewer() {
         <bim-toolbar-section label="Properties">
         <bim-button icon="clarity:list-line" label="Show" @click=${onShowProperties}></bim-button>
         </bim-toolbar-section>
+        <bim-toolbar-section label="Groups">
+        <bim-button icon="tabler:eye-filled" label="Classifier" @click=${onClassifierUpdate}></bim-button>
+        </bim-toolbar-section>
         </bim-toolbar>
       `
     })
@@ -228,6 +266,17 @@ export function IFCViewer() {
         elements: {
           toolbar,
           worldPanel,
+        },
+      },
+      classifier: {
+        template: `
+          "empty classifierPanel" 1fr
+          "toolbar toolbar" auto
+          /1fr 20rem
+     `,
+        elements: {
+          toolbar,
+          classifierPanel,
         },
       },
     }
