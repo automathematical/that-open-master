@@ -5,6 +5,8 @@ import { IFCViewer } from './IFCViewer'
 import { deleteDocument, updateDocument } from '../firebase'
 import { IProject } from '../classes/Project'
 import * as BUI from '@thatopen/ui'
+import * as OBC from '@thatopen/components'
+import { todoTool } from '../bim-components/TodoCreator'
 
 interface Props {
   projectManager: ProjectManager
@@ -19,6 +21,9 @@ export function ProjectDetailsPage(props: Props) {
   if (!project) {
     return <p>Project with ID {routeParams.id} not found</p>
   }
+
+  const components = new OBC.Components()
+  const todoContainer = React.useRef<HTMLDivElement>(null)
 
   const navigateTo = Router.useNavigate()
   props.projectManager.onProjectDeleted = async (id) => {
@@ -56,6 +61,11 @@ export function ProjectDetailsPage(props: Props) {
       },
     ]
   }
+
+  React.useEffect(() => {
+    const todoButton = todoTool({ components })
+    todoContainer.current?.appendChild(todoButton)
+  }, [])
 
   return (
     <div
@@ -175,14 +185,14 @@ export function ProjectDetailsPage(props: Props) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <bim-label style={{ color: '#fff', fontSize: 'var(--font-lg)' }}>To-Do</bim-label>
               <div
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'end',
                   columnGap: 20,
-                }}>
+                }}
+                ref={todoContainer}>
                 <div style={{ display: 'flex', alignItems: 'center', columnGap: 10 }}>
                   <bim-label className='material-icons-round'>search</bim-label>
                   <bim-text-input
@@ -196,36 +206,7 @@ export function ProjectDetailsPage(props: Props) {
                   icon='material-symbols:add'></bim-button>
               </div>
             </div>
-            {/* <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                padding: '10px 30px',
-                rowGap: 20,
-              }}>
-              <div className='todo-item'>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                  <div style={{ display: 'flex', columnGap: 15, alignItems: 'center' }}>
-                    <span
-                      className='material-icons-round'
-                      style={{
-                        padding: 10,
-                        backgroundColor: '#686868',
-                        borderRadius: 10,
-                      }}>
-                      construction
-                    </span>
-                    <p>Make anything here as you want, even something longer.</p>
-                  </div>
-                  <p style={{ textWrap: 'nowrap', marginLeft: 10 }}>Fri, 20 sep</p>
-                </div>
-              </div>
-            </div> */}
+
             <div>
               <bim-table
                 id='todo-table'
@@ -233,7 +214,7 @@ export function ProjectDetailsPage(props: Props) {
             </div>
           </div>
         </div>
-        <IFCViewer />
+        <IFCViewer components={components} />
       </div>
     </div>
   )
