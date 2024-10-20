@@ -6,7 +6,9 @@ import { deleteDocument, updateDocument } from '../firebase'
 import { IProject } from '../classes/Project'
 import * as BUI from '@thatopen/ui'
 import * as OBC from '@thatopen/components'
-import { TodoCreator, todoTool, TodoData } from '../bim-components/TodoCreator'
+import * as OBCF from '@thatopen/components-front'
+import { TodoCreator, todoTool } from '../bim-components/TodoCreator'
+import { TodoData } from '../bim-components/TodoCreator/src/base-types'
 
 interface Props {
   projectManager: ProjectManager
@@ -23,6 +25,7 @@ export function ProjectDetailsPage(props: Props) {
   }
 
   const components = new OBC.Components()
+  const dashboard = React.useRef<HTMLDivElement>(null)
   const todoContainer = React.useRef<HTMLDivElement>(null)
 
   const navigateTo = Router.useNavigate()
@@ -37,33 +40,45 @@ export function ProjectDetailsPage(props: Props) {
     navigateTo('/')
   }
 
-  React.useEffect(() => {
-    const newToDoBtn = document.getElementById('new-todo-btn')
-    if (newToDoBtn) {
-      newToDoBtn.addEventListener('click', () => {
-        console.log('new todooo')
+  const onRowCreated = (e: CustomEvent) => {
+    e?.stopImmediatePropagation()
+    const { row } = e.detail
+    row.addEventListener('click', () => {
+      todoCreator.highLightTodo({
+        name: row.data.Name,
+        task: row.data.Task,
+        ifcGuids: JSON.parse(row.data.Guids),
+        camera: JSON.parse(row.data.Camera),
       })
-    }
-  }, [])
+    })
+  }
 
-  const tableRef = React.useRef<BUI.Table>(null)
+  const todoTable = BUI.Component.create<BUI.Table>(() => {
+    return BUI.html`
+    <bim-table @rowcreated=${onRowCreated}></bim-table>
+    `
+  })
 
   const addTodo = (data: TodoData) => {
-    if (!tableRef.current) return
+    if (!todoTable) return
     const newData = {
       data: {
         Name: data.name,
         Task: data.task,
         Date: new Date().toDateString(),
+        Guids: JSON.stringify(data.ifcGuids),
+        Camera: data.camera ? JSON.stringify(data.camera) : '',
       },
     }
-    tableRef.current.data = [...tableRef.current.data, newData]
+    todoTable.data = [...todoTable.data, newData]
+    todoTable.hiddenColumns = ['Guids', 'Camera']
   }
 
   const todoCreator = components.get(TodoCreator)
   todoCreator.onTodoCreated.add((data) => addTodo(data))
 
   React.useEffect(() => {
+    dashboard.current?.appendChild(todoTable)
     const todoButton = todoTool({ components })
     todoContainer.current?.appendChild(todoButton)
   }, [])
@@ -178,7 +193,8 @@ export function ProjectDetailsPage(props: Props) {
           </div>
           <div
             className='dashboard-card'
-            style={{ flexGrow: 1 }}>
+            style={{ flexGrow: 1 }}
+            ref={dashboard}>
             <div
               style={{
                 padding: '20px 30px',
@@ -186,6 +202,7 @@ export function ProjectDetailsPage(props: Props) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
+              <bim-label style={{ color: '#fff', fontSize: 'var(--font-lg)' }}>To-Do</bim-label>
               <div
                 style={{
                   display: 'flex',
@@ -201,17 +218,7 @@ export function ProjectDetailsPage(props: Props) {
                     placeholder="Search To-Do's by name"
                   />
                 </div>
-                <bim-button
-                  id='new-todo-btn'
-                  label='add'
-                  icon='material-symbols:add'></bim-button>
               </div>
-            </div>
-
-            <div>
-              <bim-table
-                id='todo-table'
-                ref={tableRef}></bim-table>
             </div>
           </div>
         </div>

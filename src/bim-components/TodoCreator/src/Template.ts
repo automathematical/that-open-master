@@ -1,7 +1,8 @@
 import * as OBC from '@thatopen/components'
+import * as OBCF from '@thatopen/components-front'
 import * as BUI from '@thatopen/ui'
 import { TodoCreator } from './TodoCreator'
-
+import { TodoData, TodoInput } from './base-types'
 
 export interface TodoUIState {
     components: OBC.Components
@@ -26,11 +27,12 @@ export const todoTool = (state: TodoUIState) => {
         ${nameInput}
         ${taskInput}
         <bim-button icon = "pajamas:todo-done" label = "Create Todo"  @click=${() => {
-                const todoValue = {
+                const TodoInput: TodoInput = {
                     name: nameInput.value,
-                    task: taskInput.value
+                    task: taskInput.value,
+                    ifcGuids: []
                 }
-                todoCreator.addTodo(todoValue)
+                todoCreator.addTodo(TodoInput)
                 nameInput.value = ""
                 taskInput.value = ""
                 todoModal.close()
