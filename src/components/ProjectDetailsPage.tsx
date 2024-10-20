@@ -6,7 +6,7 @@ import { deleteDocument, updateDocument } from '../firebase'
 import { IProject } from '../classes/Project'
 import * as BUI from '@thatopen/ui'
 import * as OBC from '@thatopen/components'
-import { todoTool } from '../bim-components/TodoCreator'
+import { TodoCreator, todoTool, TodoData } from '../bim-components/TodoCreator'
 
 interface Props {
   projectManager: ProjectManager
@@ -46,21 +46,22 @@ export function ProjectDetailsPage(props: Props) {
     }
   }, [])
 
-  const onTableCreated = (element?: Element) => {
-    if (!element) {
-      return
-    }
-    const toDoTable = element as BUI.Table
+  const tableRef = React.useRef<BUI.Table>(null)
 
-    toDoTable.data = [
-      {
-        data: {
-          tasks: 'Make anything here as you want, even something longer.',
-          date: 'Fri, 20 sep',
-        },
+  const addTodo = (data: TodoData) => {
+    if (!tableRef.current) return
+    const newData = {
+      data: {
+        Name: data.name,
+        Task: data.task,
+        Date: new Date().toDateString(),
       },
-    ]
+    }
+    tableRef.current.data = [...tableRef.current.data, newData]
   }
+
+  const todoCreator = components.get(TodoCreator)
+  todoCreator.onTodoCreated.add((data) => addTodo(data))
 
   React.useEffect(() => {
     const todoButton = todoTool({ components })
@@ -210,7 +211,7 @@ export function ProjectDetailsPage(props: Props) {
             <div>
               <bim-table
                 id='todo-table'
-                ref={onTableCreated}></bim-table>
+                ref={tableRef}></bim-table>
             </div>
           </div>
         </div>
