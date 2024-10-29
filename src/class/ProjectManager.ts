@@ -149,7 +149,7 @@ export class ProjectManager {
                 try {
                     this.newProject(project)
                 } catch (error) {
-
+                    console.error(error)
                 }
             }
         })
