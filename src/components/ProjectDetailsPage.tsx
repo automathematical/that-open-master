@@ -29,12 +29,12 @@ export function ProjectDetailsPage(props: Props) {
   const todoContainer = React.useRef<HTMLDivElement>(null)
 
   const navigateTo = Router.useNavigate()
-  props.projectManager.onProjectDeleted = async (id) => {
+  props.projectManager.onProjectDeleted = async id => {
     await deleteDocument('/projects', id)
     navigateTo('/')
   }
 
-  props.projectManager.updateProject = async (project) => {
+  props.projectManager.updateProject = async project => {
     await updateDocument<Partial<IProject>>('/projects', project.id, { name: 'new name' })
     // navigateTo(`/project/${project.id}`)
     navigateTo('/')
@@ -47,8 +47,10 @@ export function ProjectDetailsPage(props: Props) {
       todoCreator.highLightTodo({
         name: row.data.Name,
         task: row.data.Task,
+        priority: row.data.priority,
         ifcGuids: JSON.parse(row.data.Guids),
         camera: JSON.parse(row.data.Camera),
+        actions: '',
       })
     })
   }
@@ -66,21 +68,40 @@ export function ProjectDetailsPage(props: Props) {
         Name: data.name,
         Task: data.task,
         Date: new Date().toDateString(),
+        prority: data.priority,
         Guids: JSON.stringify(data.ifcGuids),
         Camera: data.camera ? JSON.stringify(data.camera) : '',
+        actions: '',
       },
     }
     todoTable.data = [...todoTable.data, newData]
+    todoTable.dataTransform = {
+      actions: () => {
+        return BUI.html`
+        <div>
+          <bim-button icon="material-symbols:delete" style='background-color: red' @click=${() => {}}> </bim-button>
+        </div>
+        `
+      },
+    }
     todoTable.hiddenColumns = ['Guids', 'Camera']
   }
 
   const todoCreator = components.get(TodoCreator)
-  todoCreator.onTodoCreated.add((data) => addTodo(data))
+  todoCreator.onTodoCreated.add(data => addTodo(data))
 
   React.useEffect(() => {
     dashboard.current?.appendChild(todoTable)
-    const todoButton = todoTool({ components })
+    const [todoButton, todoPriorityButton] = todoTool({ components })
     todoContainer.current?.appendChild(todoButton)
+    todoContainer.current?.appendChild(todoPriorityButton)
+
+    todoCreator.onDisposed.add(() => {
+      todoTable.data = []
+      todoTable.remove()
+      todoButton.remove()
+      todoPriorityButton.remove()
+    })
   }, [])
 
   return (
@@ -129,7 +150,7 @@ export function ProjectDetailsPage(props: Props) {
                 }}>
                 {project?.name
                   .split(' ')
-                  .map((n) => n[0])
+                  .map(n => n[0])
                   .join('')}
               </p>
               <div>

@@ -19,7 +19,7 @@ export function ProjectCard({ project }: Props) {
           }}>
           {project.name
             .split(' ')
-            .map((n) => n[0])
+            .map(n => n[0])
             .join('')}
         </p>
         <div>

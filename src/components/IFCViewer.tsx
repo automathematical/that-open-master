@@ -41,7 +41,7 @@ export function IFCViewer(Props: Props) {
     grids.create(world)
 
     const fragmentManager = components.get(OBC.FragmentsManager)
-    fragmentManager.onFragmentsLoaded.add(async (model) => {
+    fragmentManager.onFragmentsLoaded.add(async model => {
       world.scene.three.add(model)
 
       model.getLocalProperties()
@@ -79,6 +79,7 @@ export function IFCViewer(Props: Props) {
 
     const todoCreator = components.get(TodoCreator)
     todoCreator.world = world
+    todoCreator.setup()
   }
 
   const processModel = async (model: FragmentsGroup) => {
@@ -253,7 +254,7 @@ export function IFCViewer(Props: Props) {
       const highlighter = components.get(OBCF.Highlighter)
 
       if (highlighter.isSetup) {
-        highlighter.events.select.onHighlight.add((fragmentIdMap) => {
+        highlighter.events.select.onHighlight.add(fragmentIdMap => {
           if (!floatingGrid) return
           floatingGrid.layout = 'second'
           updatePropsTable({ fragmentIdMap })
@@ -346,7 +347,7 @@ export function IFCViewer(Props: Props) {
 
         <bim-toolbar-section label="Selection">
         <bim-button icon="material-symbols:visibility-outline" tooltip-title="Visibility" @click=${onToggleVisibility}></bim-button>
-        <bim-button icon="mdi:filter" tooltip-title="Isolate" @click=${onIsolate}></bim-button> 
+        <bim-button icon="mdi:filter" tooltip-title="Isolate" @click=${onIsolate}></bim-button>
         <bim-button icon="tabler:eye-filled" tooltip-title="Show All" @click=${onShowAll}></bim-button>
         </bim-toolbar-section>
 

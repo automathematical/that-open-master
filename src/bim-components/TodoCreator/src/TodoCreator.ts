@@ -4,23 +4,59 @@ import * as THREE from 'three'
 import { TodoData, TodoInput } from './base-types'
 
 
-export class TodoCreator extends OBC.Component {
+export class TodoCreator extends OBC.Component implements OBC.Disposable {
     static uuid = '9ea007eb-5082-48cc-8f6f-09f13f649cd8'
     enabled = true
-    onTodoCreated = new OBC.Event<TodoData>()
 
     private _world: OBC.World
+    private _list: TodoData[] = []
+
+    onTodoCreated = new OBC.Event<TodoData>()
+    onDisposed: OBC.Event<any> = new OBC.Event()
 
     constructor(components: OBC.Components) {
         super(components)
         this.components.add(TodoCreator.uuid, this)
     }
 
+    async dispose() {
+        this.enabled = false
+        this._list = []
+        this.onDisposed.trigger()
+    }
+
+    setup() {
+        const highLigher = this.components.get(OBCF.Highlighter)
+        highLigher.add(`${TodoCreator.uuid}-priority-Low`, new THREE.Color(0x59bc59))
+        highLigher.add(`${TodoCreator.uuid}-priority-Medium`, new THREE.Color(0x597cff))
+        highLigher.add(`${TodoCreator.uuid}-priority-High`, new THREE.Color(0xff7676))
+    }
+
     set world(world: OBC.World) {
         this._world = world
     }
 
-    addTodo(data: TodoInput) {
+    set enablePriorityHighlight(value: boolean) {
+        if (!this.enabled) return
+
+        const fragments = this.components.get(OBC.FragmentsManager)
+        const highlighter = this.components.get(OBCF.Highlighter)
+        if (value) {
+            for (const todo of this._list) {
+                const fragmentIdMap = fragments.guidToFragmentIdMap(todo.ifcGuids)
+                highlighter.highlightByID(`${TodoCreator.uuid}-priority-${todo.priority}`, fragmentIdMap, false, false)
+                console.log('Highlighting', `${TodoCreator.uuid}-priority-${todo.priority}`);
+
+            }
+        } else {
+            highlighter.clear()
+        }
+    }
+
+
+    async addTodo(data: TodoInput) {
+        if (!this.enabled) return
+
         const fragments = this.components.get(OBC.FragmentsManager)
         const highlighter = this.components.get(OBCF.Highlighter)
         const guids = fragments.fragmentIdMapToGuids(highlighter.selection.select)
@@ -38,13 +74,19 @@ export class TodoCreator extends OBC.Component {
         const todoData: TodoData = {
             name: data.name,
             task: data.task,
+            priority: data.priority,
             ifcGuids: guids,
-            camera: { position, target }
+            camera: { position, target },
+            actions: ""
         }
+
+        this._list.push(todoData)
         this.onTodoCreated.trigger(todoData)
     }
 
     async highLightTodo(todo: TodoData) {
+        if (!this.enabled) return
+
         const fragments = this.components.get(OBC.FragmentsManager)
         const fragmentIdMap = fragments.guidToFragmentIdMap(todo.ifcGuids)
         const highlighter = this.components.get(OBCF.Highlighter)

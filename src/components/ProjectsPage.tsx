@@ -32,7 +32,7 @@ export function ProjectsPage(props: Props) {
       try {
         props.projectManager.newProject(project, doc.id)
       } catch (error) {
-        const existingProject = props.projectManager.list.find((p) => p.name === project.name)
+        const existingProject = props.projectManager.list.find(p => p.name === project.name)
         // if (existingProject) {
         //   props.projectManager.updateProject(existingProject)
         //   throw new Error('project with samen name already exists')
@@ -45,7 +45,7 @@ export function ProjectsPage(props: Props) {
     getFirebaseProjects()
   }, [])
 
-  const projectCards = projects.map((project) => {
+  const projectCards = projects.map(project => {
     return (
       <Router.Link
         to={`/project/${project.id}`}
@@ -255,7 +255,7 @@ export function ProjectsPage(props: Props) {
       </dialog>
       <header>
         <bim-label>Projects</bim-label>
-        <SearchBox onChange={(value) => onProjectSearch(value)} />
+        <SearchBox onChange={value => onProjectSearch(value)} />
         <div
           style={{ display: 'flex', flexDirection: 'row' }}
           id='project-page-controls'></div>

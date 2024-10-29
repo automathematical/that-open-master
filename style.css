@@ -297,3 +297,7 @@ select:focus {
   flex-direction: row;
   justify-content: end;
 }
+
+.bim-option {
+  padding: 4px;
+}
