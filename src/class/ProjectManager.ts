@@ -70,7 +70,7 @@ export class ProjectManager {
     //     this.deleteProject(project.id)
     // }
 
-    private setDetailsPage(project: Project) {
+    setDetailsPage(project: Project) {
         const detailsPage = document.getElementById('project-details')
         if (!detailsPage) { return }
         const name = detailsPage.querySelector("[data-project-info='name']")
@@ -85,9 +85,13 @@ export class ProjectManager {
         if (status) { status.textContent = project.status }
         const userRole = detailsPage.querySelector("[data-project-info='userRole']")
         if (userRole) { userRole.textContent = project.userRole }
+        const cost = detailsPage.querySelector("[data-project-info='cost']")
+        if (cost) { cost.textContent = project.cost.toString() }
+        const finishDate = detailsPage.querySelector("[data-project-info='finishDate']")
+        if (finishDate) { finishDate.textContent = project.finishDate.toDateString() }
     }
 
-    private setRandomColor(project: Project) {
+    setRandomColor(project: Project) {
         const colors = ['#5ed14f', ' #c5d14f', '#d17b4f', '#4f7bd1', '#4fbbd1']
         const bg = document.getElementById("card-icon")
         if (!bg) { return }
