@@ -6,39 +6,33 @@ export class ProjectManager {
 
     constructor(container: HTMLElement) {
         this.ui = container
-        const project = this.newProject({
-            name: "Default Project",
-            description: "This is just a default app project",
-            status: "pending",
-            userRole: "architect",
-            finishDate: new Date()
-        })
-        project.ui.click()
+        // const project = this.newProject({
+        //     name: "Default Project",
+        //     description: "This is just a default app project",
+        //     status: "pending",
+        //     userRole: "architect",
+        //     finishDate: new Date()
+        // })
+        // project.ui.click()
     }
 
     newProject(data: IProject) {
-        const projectNames = this.list.map((project) => {
-            return project.name
-        })
-        const nameInUse = projectNames.includes(data.name)
-        if (nameInUse) {
-            throw new Error(`A project with the name "${data.name}" already exists`)
-        }
-        const nameLength = data.name.length
-        if (nameLength < 5) {
-            throw new Error('Name is too short')
-        }
+        this.checkDuplicate(data)
+        this.checkNameLength(data)
 
-        const project = new Project(data)
         const projectsPage = document.getElementById("projects-page")
         const detailsPage = document.getElementById("project-details")
         const peoplePage = document.getElementById('users-page')
+
+        const project = new Project(data)
+        console.log(project.ui);
+
         project.ui.addEventListener("click", () => {
             if (!projectsPage || !detailsPage) { return }
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
-            this.setDetailsPage(project)
-            this.setRandomColor(project)
+            this.setDetailsPage(project) // set details page for the project
+            this.setRandomColor(project) // set random color for the project card
         })
 
         const projectsNavBtn = document.getElementById('projects-navbtn')
@@ -62,25 +56,57 @@ export class ProjectManager {
 
         this.ui.append(project.ui)
         this.list.push(project)
-        return project
     }
 
-    // updateProject(project: Project) {
-    //     console.log('edit clicked');
-    //     this.deleteProject(project.id)
-    // }
+    editProject(id: string, data: IProject) {
+        const project = this.getProjectByID(id)
+        if (!project) { return }
+        for (const key in data) {
+            project[key] = data[key]
+        }
+        this.setDetailsPage(project)
+        this.setRandomColor(project)
+    }
+
+    checkDuplicate(data: IProject) {
+        const projectNames = this.list.map((project) => {
+            return project.name
+        })
+        const nameInUse = projectNames.includes(data.name)
+        if (nameInUse) {
+            throw new Error(`A project with the name "${data.name}" already exists`)
+        }
+    }
+
+    checkNameLength(data: IProject) {
+        const nameLength = data.name.length
+        if (nameLength < 5) {
+            throw new Error('Name is too short')
+        }
+    }
+
+    addProject(project: IProject) {
+        const newProject = this.newProject(project)
+        return newProject
+    }
 
     setDetailsPage(project: Project) {
         const detailsPage = document.getElementById('project-details')
         if (!detailsPage) { return }
+
         const name = detailsPage.querySelector("[data-project-info='name']")
         if (name) { name.textContent = project.name }
-        const initials = detailsPage.querySelector("[data-project-info='initials']")
-        if (initials) { initials.textContent = project.name.split(" ").map((n) => n[0]).join("") }
         const description = detailsPage.querySelector("[data-project-info='description']")
         if (description) { description.textContent = project.description }
+
+        const initials = detailsPage.querySelector("[data-project-info='initials']")
+        if (initials) { initials.textContent = project.name.split(" ").map((n) => n[0]).join("") }
         const cardName = detailsPage.querySelector("[data-project-info='cardName']")
         if (cardName) { cardName.textContent = project.name }
+
+        const cardDescription = detailsPage.querySelector("[data-project-info='cardDescription']")
+        if (cardDescription) { cardDescription.textContent = project.description }
+
         const status = detailsPage.querySelector("[data-project-info='status']")
         if (status) { status.textContent = project.status }
         const userRole = detailsPage.querySelector("[data-project-info='userRole']")
@@ -98,7 +124,7 @@ export class ProjectManager {
         bg.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]
     }
 
-    getProject(id: string) {
+    getProjectByID(id: string) {
         const project = this.list.find((project) => {
             return project.id === id
         })
@@ -113,13 +139,10 @@ export class ProjectManager {
     }
 
     deleteProject(id: string) {
-        const project = this.getProject(id)
-        if (!project) { return }
-        project.ui.remove()
-        const remaining = this.list.filter((project) => {
-            return project.id !== id
-        })
-        this.list = remaining
+        const projectIndex = this.list.findIndex((project) => project.id === id)
+        if (projectIndex === -1) { return }
+        this.list[projectIndex].ui.remove()
+        this.list.splice(projectIndex, 1) // remove the project from the list
     }
 
     calcTotalCost() {

@@ -35,7 +35,7 @@ export class Project implements IProject {
 
     //render data
     setUI() {
-        if (this.ui) { return }
+        if (this.ui && this.ui instanceof HTMLElement) { return }
         this.ui = document.createElement("div")
         this.ui.className = 'project-card'
         this.ui.innerHTML = `

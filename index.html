@@ -61,7 +61,8 @@
                             <input name="finishDate" type="date" value="2024-01-01"></input>
                         </div>
                         <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
-                            <button type="button" value="cancel" style="background-color: transparent;">Cancel</button>
+                            <button type="button" value="cancel" id="cancel-btn"
+                                style="background-color: transparent;">Cancel</button>
                             <button type="submit" style="background-color: rgb(18, 145, 18);">Accept</button>
                         </div>
                     </div>
@@ -109,10 +110,57 @@
             </div>
         </div>
         <div class="page" id="project-details" style="display: none;">
+            <dialog id="edit-project-modal">
+                <form id="edit-project-form">
+                    <h2>Edit Project</h2>
+                    <div class="input-list">
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">apartment</span>Name</label>
+                            <input name="name" type="text" placeholder="What's the name of your project?">
+                            <p style="color: gray; font-size: var(--font-sm); margin-top: 5px; font-style: italic;">TIP:
+                                Give it a short name</p>
+                            <p id="error"></p>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">subject</span>Description</label>
+                            <textarea name="description" cols="30" rows="5"
+                                placeholder="Give your project a nice description! So people is jealous about it."></textarea>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">person</span>Role</label>
+                            <select name="userRole">
+                                <option>Architect</option>
+                                <option>Engineer</option>
+                                <option>Developer</option>
+                            </select>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">not_listed_location</span>Status</label>
+                            <select name="status">
+                                <option>Pending</option>
+                                <option>Active</option>
+                                <option>Finished</option>
+                            </select>
+                        </div>
+                        <div class="form-field-container">
+                            <label for="finishDate">
+                                <span class="material-icons-round">calendar_month</span>
+                                Finish Date
+                            </label>
+                            <input name="finishDate" type="date" value="2024-01-01"></input>
+                        </div>
+                        <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
+                            <button type="button" value="cancel" id="cancel-btn"
+                                style="background-color: transparent;">Cancel</button>
+                            <button type="submit" style="background-color: rgb(18, 145, 18);">Accept</button>
+                        </div>
+                    </div>
+                </form>
+            </dialog>
             <header>
                 <div>
                     <h2 data-project-info="name">Hospital Center</h2>
-                    <p style="color: #969696">Community hospital located at downtown</p>
+                    <p style="color: #969696" data-project-info="description">Community hospital located at downtown</p>
                 </div>
             </header>
             <div class="main-page-content">
@@ -130,7 +178,7 @@
                         <div style="padding: 0 30px;">
                             <div>
                                 <h5 data-project-info='cardName'>Hospital Center</h5>
-                                <p data-project-info='description'>Community hospital located at downtown</p>
+                                <p data-project-info="cardDescription">Community hospital located at downtown</p>
                             </div>
                             <div
                                 style="display: flex; column-gap: 30px; padding: 30px 0px; justify-content: space-between;">
