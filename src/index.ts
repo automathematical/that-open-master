@@ -1,6 +1,7 @@
 import { ErrorMessage } from '../src/class/ErrorMessage'
 import { IProject, UserRole, ProjectStatus } from '../src/class/Project'
 import { ProjectManager } from '../src/class/ProjectManager'
+import { ITodo } from './class/Todo'
 
 const projectListUI = document.getElementById('projects-list') as HTMLElement
 const projectManager = new ProjectManager(projectListUI)
@@ -34,6 +35,7 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       userRole: formData.get('userRole') as UserRole,
       finishDate: new Date(formData.get("finishDate") as string),
       id: formData.get("id") as string,
+      todoList: []
     }
     try {
       projectManager.createProject(projectData)
@@ -74,7 +76,8 @@ if (editForm && editForm instanceof HTMLFormElement) {
       status: formData.get('status') as ProjectStatus,
       userRole: formData.get('userRole') as UserRole,
       finishDate: new Date(formData.get("finishDate") as string),
-      id: formData.get("id") as string
+      id: formData.get("id") as string,
+      todoList: []
     }
     try {
       projectManager.updateProject(projectData)
@@ -100,7 +103,41 @@ if (cancelBtnEdit) {
 const newToDoBtn = document.getElementById('new-todo-btn')
 if (newToDoBtn) {
   newToDoBtn.addEventListener('click', () => {
-    console.log('new todo');
+    console.log('new todo clicked');
+    toggleModal(true, 'new-todo-modal')
+  })
+}
+
+const todoForm = document.getElementById('new-todo-form')
+if (todoForm && todoForm instanceof HTMLFormElement) {
+  todoForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+    const formData = new FormData(todoForm)
+    const TodoData: ITodo = {
+      name: formData.get('name') as string,
+      description: formData.get('description') as string,
+      status: formData.get('status') as ProjectStatus,
+      finishDate: new Date(formData.get("finishDate") as string),
+      id: formData.get("id") as string,
+    }
+    try {
+      projectManager.createTodo(TodoData)
+      todoForm.reset()
+      toggleModal(false, "new-todo-modal")
+      console.log('updated list', projectManager.list)
+    } catch (error) {
+      todoForm.reset();
+      (new ErrorMessage(todoForm, error)).showError()
+    }
+  })
+} else {
+  console.log('The todo form was not found')
+}
+
+const cancelBtnTodoNew = document.getElementById('cancel-btn-todo-new')
+if (cancelBtnEdit) {
+  cancelBtnEdit.addEventListener('click', () => {
+    toggleModal(false, 'edit-todo-modal')
   })
 }
 

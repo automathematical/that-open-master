@@ -1,8 +1,10 @@
 import { IProject, Project } from "./Project"
+import { ITodo, Todo } from "./Todo"
 
 export class ProjectManager {
     list: Project[] = []
     ui: HTMLElement
+    listTodo: Todo[] = []
 
     constructor(container: HTMLElement) {
         this.ui = container
@@ -17,11 +19,12 @@ export class ProjectManager {
         const peoplePage = document.getElementById('users-page')
 
         const project = new Project(data)
+        const todo = new Todo(data)
         project.ui.addEventListener("click", () => {
             if (!projectsPage || !detailsPage) { return }
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
-            this.setDetailsPage(project)
+            this.setDetailsPage(project, todo)
             this.setRandomColor(project)
         })
 
@@ -50,11 +53,20 @@ export class ProjectManager {
         console.log('Project and added to list:', this.list);
     }
 
-    setDetailsPage(project: Project) {
+    createTodo(data: ITodo) {
+        // Create a new Todo
+        const todo = new Todo(data)
+        this.listTodo.push(todo)
+        console.log('Todo added to list:', this.listTodo);
+    }
+
+    setDetailsPage(project: Project, todo: Todo) {
         const detailsPage = document.getElementById('project-details')
         if (!detailsPage) { return }
         const initials = detailsPage.querySelector("[data-project-info='initials']")
         if (initials) { initials.textContent = project.name.split(" ").map((n) => n[0]).join("") }
+
+
         const cardName = detailsPage.querySelector("[data-project-info='cardName']")
         if (cardName) { cardName.textContent = project.name }
 
@@ -80,29 +92,47 @@ export class ProjectManager {
                 finishDate.textContent = 'Invalid date';
             }
         }
-    }
 
-    setCardDetails(detailsPage: HTMLElement, project: Project) {
-
-    }
-
-    setTodoCardDetails(detailsPage: HTMLElement, project: Project) {
-        console.log('Todo details:', project);
-        const id = detailsPage.querySelector("[data-todo-info='id']")
+        const todoName = detailsPage.querySelector("[data-todo-info='name']")
+        if (todoName) { todoName.textContent = todo.name }
+        const todoDescription = detailsPage.querySelector("[data-todo-info='description']")
+        if (todoDescription) { todoDescription.textContent = todo.description }
+        const todoStatus = detailsPage.querySelector("[data-todo-info='status']")
+        if (todoStatus) { todoStatus.textContent = todo.status }
+        const todoFinishDate = detailsPage.querySelector("[data-todo-info='finishDate']")
+        if (todoFinishDate) {
+            const date = new Date(todo.finishDate);
+            if (!isNaN(date.getTime())) {
+                todoFinishDate.textContent = date.toDateString();
+            } else {
+                console.error('Invalid date:', todo.finishDate);
+                todoFinishDate.textContent = 'Invalid date';
+            }
+        }
     }
 
     updateProject(data: IProject) {
         this.checkNameLength(data)
 
         const newList: Project[] = []
+        // const newTodoList: Todo[] = []
         for (const project of this.list) {
-            if (project.id !== data.id) {
+            if (project.id === data.id) {
                 project.name = data.name
                 project.description = data.description
                 project.status = data.status
                 project.userRole = data.userRole
                 project.finishDate = data.finishDate
             }
+            // for (const todo of project.todoList) {
+            //     if (todo.id === data.id) {
+            //         todo.name = data.name
+            //         todo.description = data.description
+            //         todo.status = data.status
+            //         todo.finishDate = data.finishDate
+            //     }
+            // }
+            // newTodoList.push(...project.todoList)
             newList.push(project)
         }
         this.list = newList

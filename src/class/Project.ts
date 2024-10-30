@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
+import { Todo } from './Todo'
 
 export type ProjectStatus = "pending" | "active" | "finished"
 export type UserRole = "architect" | "engineer" | "developer"
@@ -10,6 +11,7 @@ export interface IProject {
     userRole: UserRole
     finishDate: Date
     id: string
+    todoList: Todo[]
 }
 
 export class Project implements IProject {
@@ -19,6 +21,7 @@ export class Project implements IProject {
     status: ProjectStatus
     userRole: UserRole
     finishDate: Date
+    todoList: Todo[]
 
     //Class internals
     ui: HTMLDivElement
