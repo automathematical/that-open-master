@@ -6,18 +6,10 @@ export class ProjectManager {
 
     constructor(container: HTMLElement) {
         this.ui = container
-        // const project = this.newProject({
-        //     name: "Default Project",
-        //     description: "This is just a default app project",
-        //     status: "pending",
-        //     userRole: "architect",
-        //     finishDate: new Date()
-        // })
-        // project.ui.click()
+        // Option to set default project/data
     }
 
-    newProject(data: IProject) {
-        this.checkDuplicate(data)
+    createProject(data: IProject) {
         this.checkNameLength(data)
 
         const projectsPage = document.getElementById("projects-page")
@@ -25,14 +17,12 @@ export class ProjectManager {
         const peoplePage = document.getElementById('users-page')
 
         const project = new Project(data)
-        console.log(project.ui);
-
         project.ui.addEventListener("click", () => {
             if (!projectsPage || !detailsPage) { return }
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
-            this.setDetailsPage(project) // set details page for the project
-            this.setRandomColor(project) // set random color for the project card
+            this.setDetailsPage(project)
+            this.setRandomColor(project)
         })
 
         const projectsNavBtn = document.getElementById('projects-navbtn')
@@ -56,19 +46,81 @@ export class ProjectManager {
 
         this.ui.append(project.ui)
         this.list.push(project)
+
+        console.log('Project and added to list:', this.list);
     }
 
-    editProject(id: string, data: IProject) {
-        const project = this.getProjectByID(id)
-        if (!project) { return }
-        for (const key in data) {
-            project[key] = data[key]
+    setDetailsPage(project: Project) {
+        const detailsPage = document.getElementById('project-details')
+        if (!detailsPage) { return }
+        const initials = detailsPage.querySelector("[data-project-info='initials']")
+        if (initials) { initials.textContent = project.name.split(" ").map((n) => n[0]).join("") }
+        const cardName = detailsPage.querySelector("[data-project-info='cardName']")
+        if (cardName) { cardName.textContent = project.name }
+
+        const id = detailsPage.querySelector("[data-project-info='id']")
+        if (id) { id.textContent = detailsPage.id }
+
+        const cardDescription = detailsPage.querySelector("[data-project-info='cardDescription']")
+        if (cardDescription) { cardDescription.textContent = project.description }
+
+        const status = detailsPage.querySelector("[data-project-info='status']")
+        if (status) { status.textContent = project.status }
+        const userRole = detailsPage.querySelector("[data-project-info='userRole']")
+        if (userRole) { userRole.textContent = project.userRole }
+        const cost = detailsPage.querySelector("[data-project-info='cost']")
+        if (cost) { cost.textContent = project.cost.toString() }
+        const finishDate = detailsPage.querySelector("[data-project-info='finishDate']");
+        if (finishDate) {
+            const date = new Date(project.finishDate);
+            if (!isNaN(date.getTime())) {
+                finishDate.textContent = date.toDateString();
+            } else {
+                console.error('Invalid date:', project.finishDate);
+                finishDate.textContent = 'Invalid date';
+            }
         }
-        this.setDetailsPage(project)
-        this.setRandomColor(project)
     }
 
-    checkDuplicate(data: IProject) {
+    setCardDetails(detailsPage: HTMLElement, project: Project) {
+
+    }
+
+    setTodoCardDetails(detailsPage: HTMLElement, project: Project) {
+        console.log('Todo details:', project);
+        const id = detailsPage.querySelector("[data-todo-info='id']")
+    }
+
+    updateProject(data: IProject) {
+        this.checkNameLength(data)
+
+        const newList: Project[] = []
+        for (const project of this.list) {
+            if (project.id === data.id) {
+                project.name = data.name
+                project.description = data.description
+                project.status = data.status
+                project.userRole = data.userRole
+                project.finishDate = data.finishDate
+            }
+            newList.push(project)
+        }
+        this.list = newList
+
+    }
+
+    checkDuplicateID(id: string) {
+        const projectIDs = this.list.map((project) => {
+            return project.id
+        })
+        if (projectIDs.includes(id)) {
+            throw new Error(`A project with the ID "${id}" already exists`)
+        } else {
+            console.log('Project ID is unique', id);
+        }
+    }
+
+    checkDuplicateName(data: IProject) {
         const projectNames = this.list.map((project) => {
             return project.name
         })
@@ -83,38 +135,6 @@ export class ProjectManager {
         if (nameLength < 5) {
             throw new Error('Name is too short')
         }
-    }
-
-    addProject(project: IProject) {
-        const newProject = this.newProject(project)
-        return newProject
-    }
-
-    setDetailsPage(project: Project) {
-        const detailsPage = document.getElementById('project-details')
-        if (!detailsPage) { return }
-
-        const name = detailsPage.querySelector("[data-project-info='name']")
-        if (name) { name.textContent = project.name }
-        const description = detailsPage.querySelector("[data-project-info='description']")
-        if (description) { description.textContent = project.description }
-
-        const initials = detailsPage.querySelector("[data-project-info='initials']")
-        if (initials) { initials.textContent = project.name.split(" ").map((n) => n[0]).join("") }
-        const cardName = detailsPage.querySelector("[data-project-info='cardName']")
-        if (cardName) { cardName.textContent = project.name }
-
-        const cardDescription = detailsPage.querySelector("[data-project-info='cardDescription']")
-        if (cardDescription) { cardDescription.textContent = project.description }
-
-        const status = detailsPage.querySelector("[data-project-info='status']")
-        if (status) { status.textContent = project.status }
-        const userRole = detailsPage.querySelector("[data-project-info='userRole']")
-        if (userRole) { userRole.textContent = project.userRole }
-        const cost = detailsPage.querySelector("[data-project-info='cost']")
-        if (cost) { cost.textContent = project.cost.toString() }
-        const finishDate = detailsPage.querySelector("[data-project-info='finishDate']")
-        if (finishDate) { finishDate.textContent = project.finishDate.toDateString() }
     }
 
     setRandomColor(project: Project) {
@@ -174,7 +194,7 @@ export class ProjectManager {
             const projects: IProject[] = JSON.parse(json as string)
             for (const project of projects) {
                 try {
-                    this.newProject(project)
+                    this.createProject(project)
                 } catch (error) {
                     console.error(error)
                 }

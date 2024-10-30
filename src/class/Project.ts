@@ -9,6 +9,7 @@ export interface IProject {
     status: ProjectStatus
     userRole: UserRole
     finishDate: Date
+    id: string
 }
 
 export class Project implements IProject {
@@ -38,6 +39,7 @@ export class Project implements IProject {
         if (this.ui && this.ui instanceof HTMLElement) { return }
         this.ui = document.createElement("div")
         this.ui.className = 'project-card'
+        this.ui.id = this.id //set id to the ui id
         this.ui.innerHTML = `
     <div class="card-header">
         <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1; text-transform: uppercase;">${this.name.split(" ").map((n) => n[0]).join("")}</p>

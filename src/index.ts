@@ -32,10 +32,11 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       description: formData.get('description') as string,
       status: formData.get('status') as ProjectStatus,
       userRole: formData.get('userRole') as UserRole,
-      finishDate: new Date(formData.get("finishDate") as string)
+      finishDate: new Date(formData.get("finishDate") as string),
+      id: formData.get("id") as string,
     }
     try {
-      projectManager.addProject(projectData)
+      projectManager.createProject(projectData)
       projectForm.reset()
       toggleModal(false, "new-project-modal")
       console.log('updated list', projectManager.list)
@@ -46,6 +47,13 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
   })
 } else {
   console.log('The Project form was not found')
+}
+
+const cancelBtnNew = document.getElementById('cancel-btn-new')
+if (cancelBtnNew) {
+  cancelBtnNew.addEventListener('click', () => {
+    toggleModal(false, 'new-project-modal')
+  })
 }
 
 const editProjectBtn = document.getElementById('edit-project-btn')
@@ -65,21 +73,28 @@ if (editForm && editForm instanceof HTMLFormElement) {
       description: formData.get('description') as string,
       status: formData.get('status') as ProjectStatus,
       userRole: formData.get('userRole') as UserRole,
-      finishDate: new Date(formData.get("finishDate") as string)
+      finishDate: new Date(formData.get("finishDate") as string),
+      id: formData.get("id") as string
     }
     try {
-
-      // projectManager.editProject(id, projectData)
+      projectManager.createProject(projectData)
+      console.log('Project updated');
       editForm.reset()
       toggleModal(false, "edit-project-modal")
+
       console.log('updated list', projectManager.list)
     } catch (error) {
       editForm.reset();
       (new ErrorMessage(editForm, error)).showError()
     }
   })
-} else {
-  console.log('The Project edit form was not found')
+}
+
+const cancelBtnEdit = document.getElementById('cancel-btn-edit')
+if (cancelBtnEdit) {
+  cancelBtnEdit.addEventListener('click', () => {
+    toggleModal(false, 'edit-project-modal')
+  })
 }
 
 const newToDoBtn = document.getElementById('new-todo-btn')
