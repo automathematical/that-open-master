@@ -96,7 +96,7 @@ export class ProjectManager {
 
         const newList: Project[] = []
         for (const project of this.list) {
-            if (project.id === data.id) {
+            if (project.id !== data.id) {
                 project.name = data.name
                 project.description = data.description
                 project.status = data.status
@@ -106,7 +106,6 @@ export class ProjectManager {
             newList.push(project)
         }
         this.list = newList
-
     }
 
     checkDuplicateID(id: string) {

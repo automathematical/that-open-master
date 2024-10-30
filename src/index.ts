@@ -77,7 +77,7 @@ if (editForm && editForm instanceof HTMLFormElement) {
       id: formData.get("id") as string
     }
     try {
-      projectManager.createProject(projectData)
+      projectManager.updateProject(projectData)
       console.log('Project updated');
       editForm.reset()
       toggleModal(false, "edit-project-modal")
