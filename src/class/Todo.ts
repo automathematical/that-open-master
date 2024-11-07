@@ -25,7 +25,10 @@ export class Todo implements ITodo {
         for (const key in data) {
             this[key] = data[key]
         }
-        this.id = uuidv4()
+        if (this.id === null || this.id === undefined || this.id === '') {
+            console.log('id is empty');
+            this.id = uuidv4()
+        }
         this.setUI()
     }
 

@@ -1,7 +1,7 @@
 import { ErrorMessage } from '../src/class/ErrorMessage'
-import { IProject, UserRole, ProjectStatus } from '../src/class/Project'
+import { IProject, UserRole, ProjectStatus, Project } from '../src/class/Project'
 import { ProjectManager } from '../src/class/ProjectManager'
-import { ITodo } from './class/Todo'
+import { ITodo, Todo } from './class/Todo'
 
 const projectListUI = document.getElementById('projects-list') as HTMLElement
 const projectManager = new ProjectManager(projectListUI)
@@ -16,6 +16,7 @@ function toggleModal(active: boolean, id: string) {
   }
 }
 
+// new project
 const newProjectBtn = document.getElementById('new-project-btn')
 if (newProjectBtn) {
   newProjectBtn.addEventListener('click', () => {
@@ -58,6 +59,7 @@ if (cancelBtnNew) {
   })
 }
 
+// Edit project
 const editProjectBtn = document.getElementById('edit-project-btn')
 if (editProjectBtn) {
   editProjectBtn.addEventListener('click', () => {
@@ -80,7 +82,7 @@ if (editForm && editForm instanceof HTMLFormElement) {
       todoList: []
     }
     try {
-      projectManager.updateProject(projectData)
+      projectManager.updateProject(new Project(projectData))
       console.log('Project updated');
       editForm.reset()
       toggleModal(false, "edit-project-modal")
@@ -100,10 +102,10 @@ if (cancelBtnEdit) {
   })
 }
 
+// New Todo
 const newToDoBtn = document.getElementById('new-todo-btn')
 if (newToDoBtn) {
   newToDoBtn.addEventListener('click', () => {
-    console.log('new todo clicked');
     toggleModal(true, 'new-todo-modal')
   })
 }
@@ -113,7 +115,7 @@ if (todoForm && todoForm instanceof HTMLFormElement) {
   todoForm.addEventListener('submit', (e) => {
     e.preventDefault()
     const formData = new FormData(todoForm)
-    const TodoData: ITodo = {
+    const todoData: ITodo = {
       name: formData.get('name') as string,
       description: formData.get('description') as string,
       status: formData.get('status') as ProjectStatus,
@@ -121,8 +123,15 @@ if (todoForm && todoForm instanceof HTMLFormElement) {
       id: formData.get("id") as string,
     }
     try {
-      projectManager.createTodo(TodoData)
+      // projectManager.createTodo(TodoData)
+      const projectId = (document.querySelector('[data-project-info="id"]'))?.textContent
+      const project = projectManager.list.find((p) => p.id === projectId);
+      if (!project) { console.log('Project not found'); return }
+      project.todoList.push(new Todo(todoData))
       todoForm.reset()
+      projectManager.updateTodoDetails(new Todo(todoData))
+      console.log('status', todoData.status);
+      projectManager.setStateColor(todoData.status)
       toggleModal(false, "new-todo-modal")
       console.log('updated list', projectManager.list)
     } catch (error) {
@@ -134,10 +143,54 @@ if (todoForm && todoForm instanceof HTMLFormElement) {
   console.log('The todo form was not found')
 }
 
+// update todo
+const newUpdateTodoBtn = document.getElementById('new-update-todo-btn')
+if (newUpdateTodoBtn) {
+  newUpdateTodoBtn.addEventListener('click', () => {
+    toggleModal(true, 'new-update-todo-modal')
+  })
+}
+
+const updateTodo = document.getElementById('new-update-todo-form')
+if (updateTodo && updateTodo instanceof HTMLFormElement) {
+  updateTodo.addEventListener('submit', (e) => {
+    console.log('submit todo clicked')
+    e.preventDefault()
+    const formData = new FormData(updateTodo)
+    const todoData: ITodo = {
+      name: formData.get('name') as string,
+      description: formData.get('description') as string,
+      status: formData.get('status') as ProjectStatus,
+      finishDate: new Date(formData.get("finishDate") as string),
+      id: formData.get("id") as string,
+    }
+    try {
+      projectManager.updateTodo(new Todo(todoData))
+      console.log('status', todoData.status);
+      projectManager.setStateColor(todoData.status)
+      console.log('Project updated');
+      updateTodo.reset()
+      toggleModal(false, "new-update-todo-modal")
+
+      console.log('updated list', projectManager.list)
+    } catch (error) {
+      updateTodo.reset();
+      (new ErrorMessage(updateTodo, error)).showError()
+    }
+  })
+}
+
+const cancelBtnUpdateTodo = document.getElementById('cancel-btn-todo-update')
+if (cancelBtnUpdateTodo) {
+  cancelBtnUpdateTodo.addEventListener('click', () => {
+    toggleModal(false, 'new-update-todo-modal')
+  })
+}
+
 const cancelBtnTodoNew = document.getElementById('cancel-btn-todo-new')
-if (cancelBtnEdit) {
-  cancelBtnEdit.addEventListener('click', () => {
-    toggleModal(false, 'edit-todo-modal')
+if (cancelBtnTodoNew) {
+  cancelBtnTodoNew.addEventListener('click', () => {
+    toggleModal(false, 'new-todo-modal')
   })
 }
 

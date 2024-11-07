@@ -4,11 +4,12 @@ import { ITodo, Todo } from "./Todo"
 export class ProjectManager {
     list: Project[] = []
     ui: HTMLElement
-    listTodo: Todo[] = []
 
     constructor(container: HTMLElement) {
+        // Set the container for the projects
         this.ui = container
-        // Option to set default project/data
+        // Option to set default project/data here
+        // ...
     }
 
     createProject(data: IProject) {
@@ -18,63 +19,70 @@ export class ProjectManager {
         const detailsPage = document.getElementById("project-details")
         const peoplePage = document.getElementById('users-page')
 
-        const project = new Project(data)
-        const todo = new Todo(data)
-        project.ui.addEventListener("click", () => {
-            if (!projectsPage || !detailsPage) { return }
-            projectsPage.style.display = "none"
-            detailsPage.style.display = "flex"
-            this.setDetailsPage(project, todo)
-            this.setRandomColor(project)
-        })
+        if (this.checkDuplicateID(data.id)) {
+            console.log('Duplicate ID:', data.id);
+            this.updateProject(data)
+        } else {
 
-        const projectsNavBtn = document.getElementById('projects-navbtn')
-        if (projectsNavBtn) {
-            projectsNavBtn.addEventListener("click", () => {
+            const project = new Project(data)
+            console.log('Unique ID:', project.id);
+
+            project.ui.addEventListener("click", () => {
                 if (!projectsPage || !detailsPage) { return }
-                projectsPage.style.display = "flex"
-                detailsPage.style.display = "none"
-            })
-        }
-
-        const usersNavBtn = document.getElementById('users-navbtn')
-        if (usersNavBtn) {
-            usersNavBtn.addEventListener("click", () => {
-                if (!projectsPage || !detailsPage || !peoplePage) { return }
-                peoplePage.style.display = 'flex'
                 projectsPage.style.display = "none"
-                detailsPage.style.display = "none"
+                detailsPage.style.display = "flex"
+                this.setDetailsPage(project)
+                this.setRandomColor()
             })
+
+            const projectsNavBtn = document.getElementById('projects-navbtn')
+            if (projectsNavBtn) {
+                projectsNavBtn.addEventListener("click", () => {
+                    if (!projectsPage || !detailsPage) { return }
+                    projectsPage.style.display = "flex"
+                    detailsPage.style.display = "none"
+                })
+            }
+
+            const usersNavBtn = document.getElementById('users-navbtn')
+            if (usersNavBtn) {
+                usersNavBtn.addEventListener("click", () => {
+                    if (!projectsPage || !detailsPage || !peoplePage) { return }
+                    peoplePage.style.display = 'flex'
+                    projectsPage.style.display = "none"
+                    detailsPage.style.display = "none"
+                })
+            }
+
+            this.ui.append(project.ui)
+            this.list.push(project)
+
+            console.log('Project and added to list:', this.list);
         }
-
-        this.ui.append(project.ui)
-        this.list.push(project)
-
-        console.log('Project and added to list:', this.list);
     }
 
-    createTodo(data: ITodo) {
-        // Create a new Todo
-        const todo = new Todo(data)
-        this.listTodo.push(todo)
-        console.log('Todo added to list:', this.listTodo);
-    }
-
-    setDetailsPage(project: Project, todo: Todo) {
+    setDetailsPage(project: Project) {
+        // Set the details page with the project data
         const detailsPage = document.getElementById('project-details')
         if (!detailsPage) { return }
         const initials = detailsPage.querySelector("[data-project-info='initials']")
         if (initials) { initials.textContent = project.name.split(" ").map((n) => n[0]).join("") }
 
+        // Project details
+        const detailsName = detailsPage.querySelector("[data-project-info='name']")
+        if (detailsName) { detailsName.textContent = project.name }
+
+        const detailsDescription = detailsPage.querySelector("[data-project-info='description']")
+        if (detailsDescription) { detailsDescription.textContent = project.description }
 
         const cardName = detailsPage.querySelector("[data-project-info='cardName']")
         if (cardName) { cardName.textContent = project.name }
 
-        const id = detailsPage.querySelector("[data-project-info='id']")
-        if (id) { id.textContent = detailsPage.id }
-
         const cardDescription = detailsPage.querySelector("[data-project-info='cardDescription']")
         if (cardDescription) { cardDescription.textContent = project.description }
+
+        const id = detailsPage.querySelector("[data-project-info='id']")
+        if (id) { id.textContent = project.id }
 
         const status = detailsPage.querySelector("[data-project-info='status']")
         if (status) { status.textContent = project.status }
@@ -92,13 +100,21 @@ export class ProjectManager {
                 finishDate.textContent = 'Invalid date';
             }
         }
+    }
 
-        const todoName = detailsPage.querySelector("[data-todo-info='name']")
-        if (todoName) { todoName.textContent = todo.name }
-        const todoDescription = detailsPage.querySelector("[data-todo-info='description']")
-        if (todoDescription) { todoDescription.textContent = todo.description }
+    updateTodoDetails(todo: Todo) {
+        const detailsPage = document.getElementById('project-details')
+        if (!detailsPage) { return }
+
+        if (!todo) {
+            console.log('No todo data'); return
+        }
+        // const todoName = detailsPage.querySelector("[data-todo-info='name']")
+        // if (todoName) { todoName.textContent = todo[0].name }
         const todoStatus = detailsPage.querySelector("[data-todo-info='status']")
         if (todoStatus) { todoStatus.textContent = todo.status }
+        const todoDescription = detailsPage.querySelector("[data-todo-info='description']")
+        if (todoDescription) { todoDescription.textContent = todo.description }
         const todoFinishDate = detailsPage.querySelector("[data-todo-info='finishDate']")
         if (todoFinishDate) {
             const date = new Date(todo.finishDate);
@@ -109,33 +125,50 @@ export class ProjectManager {
                 todoFinishDate.textContent = 'Invalid date';
             }
         }
+
     }
 
     updateProject(data: IProject) {
         this.checkNameLength(data)
+        console.log('Project data:', data);
 
         const newList: Project[] = []
-        // const newTodoList: Todo[] = []
         for (const project of this.list) {
-            if (project.id === data.id) {
-                project.name = data.name
-                project.description = data.description
-                project.status = data.status
-                project.userRole = data.userRole
-                project.finishDate = data.finishDate
+            for (const key in project) {
+                project[key] = data[key]
             }
-            // for (const todo of project.todoList) {
-            //     if (todo.id === data.id) {
-            //         todo.name = data.name
-            //         todo.description = data.description
-            //         todo.status = data.status
-            //         todo.finishDate = data.finishDate
-            //     }
-            // }
-            // newTodoList.push(...project.todoList)
             newList.push(project)
+            this.setDetailsPage(project)
         }
         this.list = newList
+
+        // Update the UI
+        const cardName = document.querySelector("[data-card-info='name']")
+        if (cardName) { cardName.textContent = data.name }
+        const cardDescription = document.querySelector("[data-card-info='description']")
+        if (cardDescription) { cardDescription.textContent = data.description }
+        const status = document.querySelector("[data-card-info='status']")
+        if (status) { status.textContent = data.status }
+        const userRole = document.querySelector("[data-card-info='userRole']")
+        if (userRole) { userRole.textContent = data.userRole }
+    }
+
+    updateTodo(data: ITodo) {
+        // Update a Todo
+        const newList: Todo[] = []
+        for (const todo of this.list[0].todoList) {
+            for (const key in todo) {
+                todo[key] = data[key]
+            }
+            newList.push(todo)
+        }
+        this.list[0].todoList = newList
+        console.log('Todo updated:')
+
+        // Update the UI
+        const todoStatus = document.querySelector("[data-todo-info='status']")
+        if (todoStatus) { todoStatus.textContent = data.status }
+
     }
 
     checkDuplicateID(id: string) {
@@ -143,9 +176,12 @@ export class ProjectManager {
             return project.id
         })
         if (projectIDs.includes(id)) {
-            throw new Error(`A project with the ID "${id}" already exists`)
+            // throw new Error(`A project with the ID "${id}" already exists`)
+            console.log('Project ID already exists', id);
+            return true
         } else {
             console.log('Project ID is unique', id);
+            return false
         }
     }
 
@@ -166,11 +202,33 @@ export class ProjectManager {
         }
     }
 
-    setRandomColor(project: Project) {
+    setRandomColor() {
         const colors = ['#5ed14f', ' #c5d14f', '#d17b4f', '#4f7bd1', '#4fbbd1']
         const bg = document.getElementById("card-icon")
         if (!bg) { return }
         bg.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]
+    }
+
+    setStateColor(status: string) {
+        const red = '#ff0000'
+        const yellow = '#ffff00'
+        const green = '#008000'
+        const bg = document.getElementById("todo-status")
+        console.log('bg:', bg);
+        if (!bg) { return }
+        switch (status) {
+            case 'Active':
+                bg.style.backgroundColor = red;
+                break;
+            case 'Pending':
+                bg.style.backgroundColor = yellow;
+                break;
+            case 'Finished':
+                bg.style.backgroundColor = green;
+                break;
+            default:
+                console.warn('Unknown status:', status);
+        }
     }
 
     getProjectByID(id: string) {

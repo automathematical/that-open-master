@@ -29,11 +29,15 @@ export class Project implements IProject {
     progress: number = 0
     id: string
 
-    constructor(data: IProject) {
+    constructor(data: IProject,) {
+
         for (const key in data) {
             this[key] = data[key]
         }
-        this.id = uuidv4()
+        if (this.id === null || this.id === undefined || this.id === '') {
+            console.log('id is empty');
+            this.id = uuidv4()
+        }
         this.setUI()
     }
 
@@ -48,26 +52,30 @@ export class Project implements IProject {
         <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1; text-transform: uppercase;">${this.name.split(" ").map((n) => n[0]).join("")}</p>
 
         <div>
-            <h5>${this.name}</h5>
-            <p>${this.description}</p>
+            <h5 data-card-info='name'>${this.name}</h5>
+            <p data-card-info='description'>${this.description}</p>
         </div>
     </div>
     <div class="card-content">
         <div class="card-property">
             <p style="color: #969696;">Status</p>
-            <p>${this.status}</p>
+            <p data-card-info='status'>${this.status}</p>
+        </div>
+        <div class="card-property">
+            <p style="color: #969696;">id</p>
+            <p data-card-info='id'>${this.id}</p>
         </div>
         <div class="card-property">
             <p style="color: #969696;">Cost</p>
-            <p>$${this.cost}</p>
+            <p data-card-info='cost'>$${this.cost}</p>
         </div>
         <div class="card-property">
             <p style="color: #969696;">Role</p>
-            <p>${this.userRole}</p>
+            <p data-card-info='role'>${this.userRole}</p>
         </div>
         <div class="card-property">
             <p style="color: #969696;">Estimated Progress</p>
-            <p>${this.progress * 100}</p>
+            <p data-card-info='progress'>${this.progress * 100}</p>
         </div>
 </div>`}
 }

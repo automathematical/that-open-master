@@ -79,34 +79,7 @@
                 </div>
             </header>
             <div id="projects-list">
-                <!-- DEFAULT HARD CODED PROJECT -->
-                <!-- <div class="project-card">
-                    <div class="card-header">
-                        <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1;">HC</p>
-                        <div>
-                            <h5>Project Name</h5>
-                            <p>Project Description Goes Here...</p>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-property">
-                            <p style="color: #969696;">Status</p>
-                            <p>Active</p>
-                        </div>
-                        <div class="card-property">
-                            <p style="color: #969696;">Role</p>
-                            <p>Engineer</p>
-                        </div>
-                        <div class="card-property">
-                            <p style="color: #969696;">Cost</p>
-                            <p>$2'000.000</p>
-                        </div>
-                        <div class="card-property">
-                            <p style="color: #969696;">Estimated Progress</p>
-                            <p>45%</p>
-                        </div>
-                    </div>
-                </div> -->
+                <!-- set the project card -->
             </div>
         </div>
         <div class="page" id="project-details" style="display: none;">
@@ -138,6 +111,10 @@
                                 <div>
                                     <p style=" color: #969696; font-size: var(--font-sm)">Status</p>
                                     <p data-project-info='status'>Active</p>
+                                </div>
+                                <div style="display: none; ">
+                                    <p style="color: #969696; font-size: var(--font-sm)">id</p>
+                                    <p data-project-info='id'>0</p>
                                 </div>
                                 <div>
                                     <p style="color: #969696; font-size: var(--font-sm)">Cost</p>
@@ -171,23 +148,29 @@
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; padding: 10px 30px; row-gap: 20px;">
+
                             <div class="todo-item" data-todo-info="id">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <div style="display: flex; column-gap: 15px; align-items: center;">
                                         <span class="material-icons-round" data-todo-info='name'
                                             style="padding: 10px; background-color: #686868; border-radius: 10px;">construction</span>
-                                        <div>
-                                            <p style=" color: #969696; font-size: var(--font-sm)">Status</p>
-                                            <p data-project-info='status'>Active</p>
+                                        <div id="todo-status">
+                                            <p style=" color: #969696; font-size: var(--font-sm)">
+                                                Status</p>
+                                            <p data-todo-info='status'>Active</p>
                                         </div>
-                                        <p data-todo-info='description'>Make anything here as you want, even something
+                                        <p data-todo-info='description'>Make anything here as you want, even
+                                            something
                                             longer.</p>
                                     </div>
-                                    <p data-todo-info='finishDate' style="text-wrap: nowrap; margin-left: 10px;">Fri, 20
+                                    <p data-todo-info='finishDate' style="text-wrap: nowrap; margin-left: 10px;">
+                                        Fri, 20
                                         sep
                                     </p>
                                 </div>
                             </div>
+                            <button id="new-update-todo-btn">edit todo state</button>
+
                         </div>
                     </div>
                 </div>
@@ -273,6 +256,26 @@
                         </div>
                         <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
                             <button type="button" value="cancel" id="cancel-btn-todo-new"
+                                style="background-color: transparent;">Cancel</button>
+                            <button type="submit" style="background-color: rgb(18, 145, 18);">Accept</button>
+                        </div>
+                    </div>
+                </form>
+            </dialog>
+            <dialog id="new-update-todo-modal">
+                <form id="new-update-todo-form">
+                    <h2>Update Todo State</h2>
+                    <div class="input-list">
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">status</span>Status</label>
+                            <select name="status">
+                                <option>Pending</option>
+                                <option>Active</option>
+                                <option>Finished</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
+                            <button type="button" value="cancel" id="cancel-btn-todo-update"
                                 style="background-color: transparent;">Cancel</button>
                             <button type="submit" style="background-color: rgb(18, 145, 18);">Accept</button>
                         </div>
