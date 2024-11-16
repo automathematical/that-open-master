@@ -53,7 +53,6 @@ export class TodoCreator extends OBC.Component implements OBC.Disposable {
         }
     }
 
-
     async addTodo(data: TodoInput) {
         if (!this.enabled) return
 
