@@ -4,6 +4,8 @@ import { ProjectManager } from '../classes/ProjectManager'
 import { ThreeViewer } from './ThreeViewer'
 import { deleteDocument, updateDocument } from '../firebase'
 import { IProject } from '../classes/Project'
+import ProjectTasksList from './ProjectTasksList'
+import TodoForm from './TodoForm'
 
 interface Props {
   projectManager: ProjectManager
@@ -20,14 +22,21 @@ export function ProjectDetailsPage(props: Props) {
   }
 
   const navigateTo = Router.useNavigate()
-  props.projectManager.onProjectDeleted = async (id) => {
+
+  const onNewTodo = () => {
+    const modal = document.getElementById('new-todo-modal')
+    if (modal && modal instanceof HTMLDialogElement) {
+      modal.showModal()
+    }
+  }
+
+  props.projectManager.onProjectDeleted = async id => {
     await deleteDocument('/projects', id)
     navigateTo('/')
   }
 
-  props.projectManager.updateProject = async (project) => {
-    await updateDocument<Partial<IProject>>('/projects', project.id, { name: 'new name' })
-    // navigateTo(`/project/${project.id}`)
+  props.projectManager.onProjectUpdated = async project => {
+    await updateDocument('/projects', project.id, { name: 'new name' })
     navigateTo('/')
   }
 
@@ -72,7 +81,7 @@ export function ProjectDetailsPage(props: Props) {
                 }}>
                 {project?.name
                   .split(' ')
-                  .map((n) => n[0])
+                  .map(n => n[0])
                   .join('')}
               </p>
               <button
@@ -129,6 +138,7 @@ export function ProjectDetailsPage(props: Props) {
               </div>
             </div>
           </div>
+          <TodoForm projectManager={props.projectManager} />
           <div
             className='dashboard-card'
             style={{ flexGrow: 1 }}>
@@ -155,7 +165,7 @@ export function ProjectDetailsPage(props: Props) {
                     style={{ width: '100%' }}
                   />
                 </div>
-                <button>
+                <button onClick={onNewTodo}>
                   <span
                     id='new-todo-btn'
                     className='material-icons-round'>
@@ -171,32 +181,11 @@ export function ProjectDetailsPage(props: Props) {
                 padding: '10px 30px',
                 rowGap: 20,
               }}>
-              <div className='todo-item'>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                  <div style={{ display: 'flex', columnGap: 15, alignItems: 'center' }}>
-                    <span
-                      className='material-icons-round'
-                      style={{
-                        padding: 10,
-                        backgroundColor: '#686868',
-                        borderRadius: 10,
-                      }}>
-                      construction
-                    </span>
-                    <p>Make anything here as you want, even something longer.</p>
-                  </div>
-                  <p style={{ textWrap: 'nowrap', marginLeft: 10 }}>Fri, 20 sep</p>
-                </div>
-              </div>
+              <ProjectTasksList />
             </div>
           </div>
         </div>
-        <ThreeViewer />
+        {/* <ThreeViewer /> */}
       </div>
     </div>
   )

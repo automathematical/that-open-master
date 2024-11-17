@@ -37,10 +37,3 @@ appRoot.render(
     </Router.BrowserRouter>
   </>
 )
-
-const newToDoBtn = document.getElementById('new-todo-btn')
-if (newToDoBtn) {
-  newToDoBtn.addEventListener('click', () => {
-    console.log('new todooo')
-  })
-}

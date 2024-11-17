@@ -14,6 +14,38 @@ export class ProjectManager {
     }
 
     newProject(data: IProject, id?: string) {
+        this.checkNameLength(data)
+        this.checkDuplicateName(data)
+
+        const project = new Project(data, id)
+        this.list.push(project)
+        this.onProjectCreated(project)
+
+        return project
+    }
+
+    checkDuplicateID(id: string) {
+        const projectIDs = this.list.map((project) => {
+            return project.id
+        })
+        if (projectIDs.includes(id)) {
+            // throw new Error(`A project with the ID "${id}" already exists`)
+            console.log('Project ID already exists', id);
+            return true
+        } else {
+            console.log('Project ID is unique', id);
+            return false
+        }
+    }
+
+    checkNameLength(data: IProject) {
+        const nameLength = data.name.length
+        if (nameLength < 5) {
+            throw new Error('Name is too short')
+        }
+    }
+
+    checkDuplicateName(data: IProject) {
         const projectNames = this.list.map((project) => {
             return project.name
         })
@@ -21,43 +53,35 @@ export class ProjectManager {
         if (nameInUse) {
             throw new Error(`A project with the name "${data.name}" already exists`)
         }
-        const nameLength = data.name.length
-        if (nameLength < 5) {
-            throw new Error('Name is too short')
-        }
-
-        const project = new Project(data, id)
-        this.list.push(project)
-        this.onProjectCreated(project)
-        this.setDetailsPage(project)
-        this.setRandomColor(project)
-
-        return project
     }
 
-
-    private setDetailsPage(project: Project) {
-        const detailsPage = document.getElementById('project-details')
-        if (!detailsPage) { return }
-        const name = detailsPage.querySelector("[data-project-info='name']")
-        if (name) { name.textContent = project.name }
-        const initials = detailsPage.querySelector("[data-project-info='initials']")
-        if (initials) { initials.textContent = project.name.split(" ").map((n) => n[0]).join("") }
-        const description = detailsPage.querySelector("[data-project-info='description']")
-        if (description) { description.textContent = project.description }
-        const cardName = detailsPage.querySelector("[data-project-info='cardName']")
-        if (cardName) { cardName.textContent = project.name }
-        const status = detailsPage.querySelector("[data-project-info='status']")
-        if (status) { status.textContent = project.status }
-        const userRole = detailsPage.querySelector("[data-project-info='userRole']")
-        if (userRole) { userRole.textContent = project.userRole }
-    }
-
-    private setRandomColor(project: Project) {
+    setRandomColor(project: Project) {
         const colors = ['#5ed14f', ' #c5d14f', '#d17b4f', '#4f7bd1', '#4fbbd1']
         const bg = document.getElementById("card-icon")
         if (!bg) { return }
         bg.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]
+    }
+
+    setStateColor(status: string) {
+        const red = '#ff0000'
+        const yellow = '#ffff00'
+        const green = '#008000'
+        const bg = document.getElementById("todo-status")
+        console.log('bg:', bg);
+        if (!bg) { return }
+        switch (status) {
+            case 'Active':
+                bg.style.backgroundColor = red;
+                break;
+            case 'Pending':
+                bg.style.backgroundColor = yellow;
+                break;
+            case 'Finished':
+                bg.style.backgroundColor = green;
+                break;
+            default:
+                console.warn('Unknown status:', status);
+        }
     }
 
     getProject(id: string) {
@@ -91,8 +115,6 @@ export class ProjectManager {
         }
         this.list[index] = project;
         this.onProjectUpdated(project);
-        this.setDetailsPage(project);
-        this.setRandomColor(project);
     }
 
     calcTotalCost() {
@@ -137,5 +159,4 @@ export class ProjectManager {
         })
         input.click()
     }
-
 }
