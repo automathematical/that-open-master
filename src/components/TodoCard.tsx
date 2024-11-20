@@ -1,6 +1,28 @@
 import React from 'react'
+import { Todo } from '../classes/Todo'
 
-const TodoCard = () => {
+interface Props {
+  todo: Todo
+}
+
+const TodoCard = ({ todo }: Props) => {
+  const { name, description, status, finishDate } = todo
+
+  let color = ''
+  switch (status) {
+    case 'active':
+      color = '#ff0000' //red
+      break
+    case 'pending':
+      color = '#ffff00' //yellow
+      break
+    case 'finished':
+      color = '#008000' //green
+      break
+    default:
+      console.warn('Unknown status:', status)
+  }
+
   return (
     <div className='todo-item'>
       <div
@@ -19,9 +41,11 @@ const TodoCard = () => {
             }}>
             construction
           </span>
-          <p>Make anything here as you want, even something longer.</p>
+          <p>{name}</p>
+          {/* <p>{description}</p> */}
+          <p style={{ backgroundColor: color }}>{status}</p>
         </div>
-        <p style={{ textWrap: 'nowrap', marginLeft: 10 }}>Fri, 20 sep</p>
+        <p style={{ textWrap: 'nowrap', marginLeft: 10 }}>{finishDate.toLocaleDateString()}</p>
       </div>
     </div>
   )

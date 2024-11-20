@@ -9,6 +9,7 @@ export interface IProject {
     status: ProjectStatus
     userRole: UserRole
     finishDate: Date
+    todoList?: string[]
 }
 
 export class Project implements IProject {
@@ -18,6 +19,7 @@ export class Project implements IProject {
     status: "pending" | "active" | "finished"
     userRole: "architect" | "engineer" | "developer"
     finishDate: Date
+    todoList?: string[]
 
     //Class internals
     cost: number = 0

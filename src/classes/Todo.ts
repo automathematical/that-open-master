@@ -24,8 +24,6 @@ export class Todo implements ITodo {
         for (const key in data) {
             this[key] = data[key]
         }
-        if (this.id === null || this.id === undefined || this.id === '') {
-            this.id = id
-        }
+        this.id = id
     }
 }

@@ -7,8 +7,8 @@ export class ProjectManager {
     onProjectUpdated = (project: Project) => { }
 
     filterProjects = (value: string) => {
-        const filteredProjects = this.list.filter((project) => {
-            return project.name.includes(value)
+        const filteredProjects = this.list.filter((item) => {
+            return item.name.includes(value)
         })
         return filteredProjects
     }

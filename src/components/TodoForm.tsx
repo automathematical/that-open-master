@@ -1,18 +1,49 @@
-import React from 'react'
-import { ITodo, Status } from '../classes/Todo'
+import React, { useState } from 'react'
+import * as Firestore from 'firebase/firestore'
+
+import { ITodo, Status, Todo } from '../classes/Todo'
 import { ProjectManager } from '../classes/ProjectManager'
-import { getCollection } from '../firebase'
-import { IProject } from '../classes/Project'
 
 interface Props {
   projectManager: ProjectManager
+  selectedTodo?: Todo
+  todoCollection?: any
 }
 
-const projectCollection = getCollection<IProject>('/projects')
+const TodoForm = ({ projectManager, selectedTodo, todoCollection }: Props) => {
+  console.log('selectedTodo:', selectedTodo)
 
-const TodoForm = (props: Props) => {
+  const [todo, setTodo] = useState<Todo>({
+    id: '',
+    name: '',
+    description: '',
+    status: 'pending',
+    finishDate: new Date(),
+  })
+  const onCancelClick = () => {
+    const modal = document.getElementById('new-todo-modal') as HTMLDialogElement | null
+    modal?.close()
+  }
+
+  // Update form when selectedTodo changes
+  React.useEffect(() => {
+    if (selectedTodo) {
+      setTodo(selectedTodo)
+    }
+  }, [selectedTodo])
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+
+    setTodo(prev => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
+
   const onFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
     const todoForm = document.getElementById('new-todo-form')
     if (!(todoForm && todoForm instanceof HTMLFormElement)) {
       return
@@ -20,6 +51,7 @@ const TodoForm = (props: Props) => {
 
     const formData = new FormData(todoForm)
     const todoData: ITodo = {
+      id: crypto.randomUUID(),
       name: formData.get('name') as string,
       status: formData.get('status') as Status,
       description: formData.get('description') as string,
@@ -27,10 +59,8 @@ const TodoForm = (props: Props) => {
     }
 
     try {
-      // Firestore.addDoc(projectCollection, todoData)
-      // const todo = props.todoManager.newTodo(todoData)
+      Firestore.addDoc(todoCollection, todoData)
       console.log('Todo created:', todoData)
-
       todoForm.reset()
       const modal = document.getElementById('new-todo-modal')
       if (!(modal && modal instanceof HTMLDialogElement)) {
@@ -42,28 +72,24 @@ const TodoForm = (props: Props) => {
     }
   }
 
-  const onCancelClick = () => {
-    const modal = document.getElementById('new-todo-modal')
-    if (modal && modal instanceof HTMLDialogElement) {
-      modal.close()
-    }
-  }
+  console.log('todo:', todo)
 
   return (
     <dialog id='new-todo-modal'>
       <form
         id='new-todo-form'
         onSubmit={onFormSubmit}>
-        <h2>New Todo</h2>
         <div className='input-list'>
           <div className='form-field-container'>
             <label>
-              <span className='material-icons-round'>todo</span>Name
+              <span className='material-icons-round'>construction</span>Name
             </label>
             <input
               name='name'
+              value={todo.name}
               type='text'
               placeholder="What's the name of your project?"
+              onChange={handleInput}
             />
             <p style={{ color: 'gray', fontSize: 'var(--font-sm)', marginTop: '5px', fontStyle: 'italic' }}>TIP: Give it a short name</p>
             <p id='error'></p>
@@ -74,18 +100,24 @@ const TodoForm = (props: Props) => {
             </label>
             <textarea
               name='description'
+              value={todo.description}
               cols={30}
               rows={5}
-              placeholder='Give your project a nice description!'></textarea>
+              onChange={handleInput}
+              placeholder='Give your project a nice description!'
+            />
           </div>
           <div className='form-field-container'>
             <label>
-              <span className='material-icons-round'>status</span>Status
+              <span className='material-icons-round'></span>Status
             </label>
-            <select name='status'>
-              <option>Pending</option>
-              <option>Active</option>
-              <option>Finished</option>
+            <select
+              name='status'
+              onChange={handleInput}
+              value={todo.status}>
+              <option value='pending'>pending</option>
+              <option value='active'>active</option>
+              <option value='finished'>finished</option>
             </select>
           </div>
           <div className='form-field-container'>
@@ -95,7 +127,8 @@ const TodoForm = (props: Props) => {
             </label>
             <input
               name='finishDate'
-              type='date'></input>
+              type='date'
+            />
           </div>
           <div style={{ display: 'flex', margin: '10px 0px 10px auto', columnGap: '10px' }}>
             <button
@@ -109,7 +142,7 @@ const TodoForm = (props: Props) => {
             <button
               type='submit'
               style={{ backgroundColor: 'rgb(18, 145, 18)' }}>
-              Accept
+              Submit
             </button>
           </div>
         </div>

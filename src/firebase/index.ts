@@ -17,6 +17,11 @@ export function getCollection<T>(path: string) {
     return Firestore.collection(firebaseDB, path) as Firestore.CollectionReference<T>;
 }
 
+export function getSubCollection<T>(parentPath: string, subCollectionPath: string) {
+    const fullPath = `${parentPath}/${subCollectionPath}`;
+    return Firestore.collection(firebaseDB, fullPath) as Firestore.CollectionReference<T>;
+}
+
 // export function deleteDocument<T>(collection: Firestore.CollectionReference<T>, docId: string) {
 //     return Firestore.deleteDoc(Firestore.doc(collection, docId));
 // }
@@ -30,3 +35,4 @@ export async function updateDocument<T extends Record<string, any>>(path: string
     const doc = Firestore.doc(firebaseDB, `${path}/${id}`);
     await Firestore.updateDoc(doc, data);
 }
+

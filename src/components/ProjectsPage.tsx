@@ -26,6 +26,7 @@ export function ProjectsPage(props: Props) {
     const firebaseProjects = await Firestore.getDocs(projectCollection)
     for (const doc of firebaseProjects.docs) {
       const data = doc.data()
+
       const project: IProject = {
         ...data,
         finishDate: (data.finishDate as unknown as Firestore.Timestamp).toDate(),

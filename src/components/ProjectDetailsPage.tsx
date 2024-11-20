@@ -3,9 +3,12 @@ import * as Router from 'react-router-dom'
 import { ProjectManager } from '../classes/ProjectManager'
 import { ThreeViewer } from './ThreeViewer'
 import { deleteDocument, updateDocument } from '../firebase'
-import { IProject } from '../classes/Project'
 import ProjectTasksList from './ProjectTasksList'
 import TodoForm from './TodoForm'
+import { getSubCollection } from '../firebase'
+import { ITodo } from '../classes/Todo'
+import * as Firestore from 'firebase/firestore'
+import SearchBox from './SearchBox'
 
 interface Props {
   projectManager: ProjectManager
@@ -21,6 +24,33 @@ export function ProjectDetailsPage(props: Props) {
     return <p>Project with ID {routeParams.id} not found</p>
   }
 
+  const todoCollection = getSubCollection<ITodo>('/projects/' + project.id, 'todoList')
+
+  const [todos, setTodos] = React.useState<ITodo[]>([])
+
+  const getFirebaseTodos = async () => {
+    const firebaseTodos = await Firestore.getDocs(todoCollection)
+    const newTodos: ITodo[] = []
+
+    for (const doc of firebaseTodos.docs) {
+      const data = doc.data()
+
+      const todo: ITodo = {
+        ...data,
+        id: doc.id,
+        finishDate: (data.finishDate as unknown as Firestore.Timestamp).toDate(),
+      }
+      newTodos.push(todo)
+    }
+    setTodos(newTodos)
+  }
+
+  console.log('todos', todos)
+
+  React.useEffect(() => {
+    getFirebaseTodos()
+  }, [])
+
   const navigateTo = Router.useNavigate()
 
   const onNewTodo = () => {
@@ -35,9 +65,13 @@ export function ProjectDetailsPage(props: Props) {
     navigateTo('/')
   }
 
-  props.projectManager.onProjectUpdated = async project => {
-    await updateDocument('/projects', project.id, { name: 'new name' })
-    navigateTo('/')
+  // props.projectManager.onProjectUpdated = async project => {
+  //   await updateDocument('/projects', project.id, { name: 'newer name' })
+  //   navigateTo('/')
+  // }
+
+  const onTodoSearch = (value: string) => {
+    setTodos(props.projectManager.filterProjects(value))
   }
 
   return (
@@ -46,8 +80,8 @@ export function ProjectDetailsPage(props: Props) {
       id='project-details'>
       <header>
         <div>
-          <h2 data-project-info='name'>Hospital Center</h2>
-          <p style={{ color: '#969696' }}>Community hospital located at downtown</p>
+          <h2 data-project-info='name'>{project.name}</h2>
+          <p style={{ color: '#969696' }}>{project.description}</p>
         </div>
         <button
           onClick={() => props.projectManager.deleteProject(project.id)}
@@ -117,7 +151,7 @@ export function ProjectDetailsPage(props: Props) {
                 </div>
                 <div>
                   <p style={{ color: '#969696', fontSize: 'var(--font-sm)' }}>Finish Date</p>
-                  <p data-project-info='finishDate'>date</p>
+                  <p data-project-info='finishDate'>{project?.finishDate.toLocaleDateString()}</p>
                 </div>
               </div>
               <div
@@ -159,12 +193,9 @@ export function ProjectDetailsPage(props: Props) {
                 }}>
                 <div style={{ display: 'flex', alignItems: 'center', columnGap: 10 }}>
                   <span className='material-icons-round'>search</span>
-                  <input
-                    type='text'
-                    placeholder="Search To-Do's by name"
-                    style={{ width: '100%' }}
-                  />
+                  <SearchBox onChange={value => onTodoSearch(value)} />
                 </div>
+
                 <button onClick={onNewTodo}>
                   <span
                     id='new-todo-btn'
@@ -181,7 +212,11 @@ export function ProjectDetailsPage(props: Props) {
                 padding: '10px 30px',
                 rowGap: 20,
               }}>
-              <ProjectTasksList />
+              <ProjectTasksList
+                projectManager={props.projectManager}
+                todos={todos}
+                todoCollection={todoCollection}
+              />
             </div>
           </div>
         </div>
