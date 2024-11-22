@@ -6,7 +6,7 @@ import { deleteDocument, updateDocument } from '../firebase'
 import ProjectTasksList from './ProjectTasksList'
 import TodoForm from './TodoForm'
 import { getSubCollection } from '../firebase'
-import { ITodo } from '../classes/Todo'
+import { ITodo, Todo } from '../classes/Todo'
 import * as Firestore from 'firebase/firestore'
 import SearchBox from './SearchBox'
 
@@ -172,7 +172,7 @@ export function ProjectDetailsPage(props: Props) {
               </div>
             </div>
           </div>
-          <TodoForm projectManager={props.projectManager} />
+          <TodoForm todoCollection={todoCollection} />
           <div
             className='dashboard-card'
             style={{ flexGrow: 1 }}>

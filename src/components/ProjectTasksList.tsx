@@ -4,15 +4,16 @@ import TodoForm from './TodoForm'
 import TodoCard from './TodoCard'
 import { ITodo, Todo } from '../classes/Todo'
 import React from 'react'
+import * as Firestore from 'firebase/firestore'
 
 interface Props {
-  todos: Todo[]
+  todos: ITodo[]
   projectManager: ProjectManager
-  todoCollection: any
+  todoCollection: Firestore.CollectionReference<ITodo>
 }
 
 const ProjectTasksList = ({ todos, projectManager, todoCollection }: Props) => {
-  const [selectedTodo, setSelectedTodo] = React.useState<Todo | null>(null)
+  const [selectedTodo, setSelectedTodo] = React.useState<ITodo>()
 
   const routeParams = Router.useParams<{ id: string }>()
 
@@ -46,7 +47,6 @@ const ProjectTasksList = ({ todos, projectManager, todoCollection }: Props) => {
   return (
     <>
       <TodoForm
-        projectManager={projectManager}
         selectedTodo={selectedTodo || undefined}
         todoCollection={todoCollection}
       />
