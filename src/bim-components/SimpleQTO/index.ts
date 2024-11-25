@@ -15,7 +15,13 @@ export class SimpleQTO extends OBC.Component implements OBC.Disposable {
         this.components.add(SimpleQTO.uuid, this)
     }
 
+    resetQuatities() {
+        this._qtoResult = {}
+    }
+
     async sumQuantities(fragmentsIdMap: FRAGS.FragmentIdMap) {
+        console.time("quatities ")
+
         const fragmenstManager = this.components.get(OBC.FragmentsManager) // Get fragments manager
         const modelIdMap = fragmenstManager.getModelIdMap(fragmentsIdMap) // Get model ID map
         for (const modelId in modelIdMap) { // Iterate over model IDs
@@ -34,14 +40,17 @@ export class SimpleQTO extends OBC.Component implements OBC.Disposable {
                     setID,
                     async (qtoID) => {
                         const { name: qtoName } = await OBC.IfcPropertiesUtils.getEntityName(model, qtoID) // Get quantity name
-                        if (!qtoName) { return }
+                        const { value } = await OBC.IfcPropertiesUtils.getQuantityValue(model, qtoID)
+                        if (!qtoName || !value) { return }
                         if (!(qtoName in this._qtoResult[setName])) { this._qtoResult[setName][qtoName] = 0 } // Create quantity name
+                        this._qtoResult[setName][qtoName] += value // Sum quantities
                     }
                 )
             })
         }
         console.log(this._qtoResult);
+        console.timeEnd("quatities V1")
     }
 
-    async dispose() { }
+    async dispose() { this.resetQuatities() }
 }

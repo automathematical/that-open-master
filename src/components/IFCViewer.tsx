@@ -262,7 +262,7 @@ export function IFCViewer(Props: Props) {
           propsTable.expanded = false
 
           const simpleQTO = components.get(SimpleQTO)
-          await simpleQTO.sumQuantities(fragmentIdMap)
+          simpleQTO.resetQuatities()
         })
 
         highlighter.events.select.onClear.add(() => {
