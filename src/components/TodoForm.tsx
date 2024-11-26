@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import * as Firestore from 'firebase/firestore'
 
 import { ITodo, Status, Todo } from '../classes/Todo'
@@ -9,34 +9,36 @@ interface Props {
 }
 
 const TodoForm = ({ selectedTodo, todoCollection }: Props) => {
-  //todo: initial todo state gets set here, should be equal to selectedTodo values if there is a selectedTodo
-  const [todo, setTodo] = useState<ITodo>(
-    selectedTodo || {
-      id: '',
-      name: '',
-      description: '',
-      status: 'pending',
-      finishDate: new Date(),
-    }
-  )
+  //! The initial state is rendered once and then ignored.
+  const [todo, setTodo] = useState<ITodo>({
+    id: '',
+    name: '',
+    description: '',
+    status: 'pending',
+    finishDate: new Date(),
+  })
 
   // Update form when selectedTodo changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedTodo) {
-      setTodo(selectedTodo)
+      console.log('Selected todo changed:', selectedTodo)
+      setTodo(prevTodo => ({
+        ...prevTodo,
+        ...selectedTodo,
+      }))
     }
   }, [selectedTodo])
 
-  React.useEffect(() => {
-    console.log('Todo updated:', todo)
+  useEffect(() => {
+    console.log('Current todo state:', todo)
   }, [todo])
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
     setTodo(prev => ({
       ...prev,
       [name]: value,
     }))
-    const { name, value } = e.target
   }
 
   const onFormSubmit = (e: React.FormEvent) => {
@@ -90,11 +92,9 @@ const TodoForm = ({ selectedTodo, todoCollection }: Props) => {
     modal?.close()
   }
 
-  console.log('todo', todo)
-
   return (
     <>
-      <p>this is the selected ID:{todo?.id || 'nothing to see here'}</p>
+      <p>this is the selected ID:{todo.id || 'nothing to see here'}</p>
       <dialog id='new-todo-modal'>
         <form
           id='new-todo-form'
@@ -135,7 +135,7 @@ const TodoForm = ({ selectedTodo, todoCollection }: Props) => {
               </label>
               <select
                 name='status'
-                value={todo.status || ''}
+                value={todo.status}
                 onChange={handleInput}>
                 <option value='pending'>pending</option>
                 <option value='active'>active</option>
@@ -150,7 +150,7 @@ const TodoForm = ({ selectedTodo, todoCollection }: Props) => {
               <input
                 name='finishDate'
                 type='date'
-                // value={todo?.finishDate?.toISOString().split('T')[0]}
+                value={todo.finishDate.toISOString().split('T')[0]}
                 onChange={handleInput}
                 required
               />

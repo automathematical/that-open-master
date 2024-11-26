@@ -27,7 +27,7 @@ const ProjectTasksList = ({ todos, projectManager, todoCollection }: Props) => {
     return <p>Project with ID {routeParams.id} not found</p>
   }
 
-  const openTodoForm = (todo: Todo) => {
+  const openTodoForm = (todo: ITodo) => {
     setSelectedTodo(todo)
     const modal = document.getElementById('new-todo-modal') as HTMLDialogElement | null
     modal?.showModal()
