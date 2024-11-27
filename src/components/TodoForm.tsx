@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import * as Firestore from 'firebase/firestore'
-
-import { ITodo, Status, Todo } from '../classes/Todo'
+import * as Router from 'react-router-dom'
+import { ProjectManager } from '../classes/ProjectManager'
+import { deleteDocument } from '../firebase'
+import { ITodo, Status } from '../classes/Todo'
 
 interface Props {
   selectedTodo?: ITodo
   todoCollection: Firestore.CollectionReference<ITodo>
+  projectManager: ProjectManager
 }
 
-const TodoForm = ({ selectedTodo, todoCollection }: Props) => {
+const TodoForm = ({ selectedTodo, todoCollection, projectManager }: Props) => {
   const [todo, setTodo] = useState<ITodo>(
     selectedTodo || {
       id: '',
@@ -93,6 +96,13 @@ const TodoForm = ({ selectedTodo, todoCollection }: Props) => {
     modal?.close()
   }
 
+  const navigateTo = Router.useNavigate()
+
+  projectManager.onProjectDeleted = async id => {
+    await deleteDocument('/' + todoCollection.path, id)
+    navigateTo('/')
+  }
+
   return (
     <>
       {/* <p>this is the selected ID:{todo.id || 'nothing to see here'}</p> */}
@@ -169,6 +179,17 @@ const TodoForm = ({ selectedTodo, todoCollection }: Props) => {
                 style={{ backgroundColor: 'rgb(18, 145, 18)' }}>
                 {selectedTodo ? 'Update' : 'Create'}
               </button>
+              {selectedTodo ? (
+                <button
+                  type='button'
+                  onClick={() => projectManager.onProjectDeleted(todo.id)}
+                  id='delete-btn-todo'
+                  style={{ backgroundColor: 'rgb(255, 0, 0)' }}>
+                  Delete
+                </button>
+              ) : (
+                ''
+              )}
             </div>
           </div>
         </form>

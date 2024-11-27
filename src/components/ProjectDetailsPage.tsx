@@ -169,7 +169,12 @@ export function ProjectDetailsPage(props: Props) {
               </div>
             </div>
           </div>
-          {modalOpen && <TodoForm todoCollection={todoCollection} />}
+          {modalOpen && (
+            <TodoForm
+              projectManager={props.projectManager}
+              todoCollection={todoCollection}
+            />
+          )}
           <div
             className='dashboard-card'
             style={{ flexGrow: 1 }}>

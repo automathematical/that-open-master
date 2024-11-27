@@ -22,10 +22,6 @@ export function getSubCollection<T>(parentPath: string, subCollectionPath: strin
     return Firestore.collection(firebaseDB, fullPath) as Firestore.CollectionReference<T>;
 }
 
-// export function deleteDocument<T>(collection: Firestore.CollectionReference<T>, docId: string) {
-//     return Firestore.deleteDoc(Firestore.doc(collection, docId));
-// }
-
 export async function deleteDocument(path: string, id: string) {
     const doc = Firestore.doc(firebaseDB, `${path}/${id}`);
     await Firestore.deleteDoc(doc);

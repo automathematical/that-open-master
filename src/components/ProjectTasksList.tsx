@@ -52,6 +52,7 @@ const ProjectTasksList = ({ todos, projectManager, todoCollection }: Props) => {
         <TodoForm
           selectedTodo={selectedTodo || undefined}
           todoCollection={todoCollection}
+          projectManager={projectManager}
         />
       )}
       <div id='projects-list'>{todos.length > 0 ? todoCards : <p>Nothing todo yet 🥹</p>}</div>
