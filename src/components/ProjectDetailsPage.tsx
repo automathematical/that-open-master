@@ -2,9 +2,8 @@ import * as React from 'react'
 import * as Router from 'react-router-dom'
 import { ProjectManager } from '../classes/ProjectManager'
 import { ThreeViewer } from './ThreeViewer'
-import { deleteDocument, updateDocument } from '../firebase'
+import { deleteDocument } from '../firebase'
 import ProjectTasksList from './ProjectTasksList'
-import TodoForm from './TodoForm'
 import { getSubCollection } from '../firebase'
 import { ITodo } from '../classes/Todo'
 import * as Firestore from 'firebase/firestore'
@@ -16,14 +15,17 @@ interface Props {
 
 export function ProjectDetailsPage(props: Props) {
   const [todos, setTodos] = React.useState<ITodo[]>([])
-  const [modalOpen, setModalOpen] = React.useState(false)
 
-  const openModal = () => {
-    const modal = document.getElementById('new-todo-modal')
-    if (modal && modal instanceof HTMLDialogElement) {
-      modal.showModal()
-    }
-    setModalOpen(true)
+  const [modalOpen, setModalOpen] = React.useState(false)
+  const closeModal = () => setModalOpen(false)
+  const openModal = () => setModalOpen(true)
+
+  if (modalOpen) {
+    const modal = document.getElementById('new-todo-modal') as HTMLDialogElement | null
+    modal?.showModal()
+  } else {
+    const modal = document.getElementById('new-todo-modal') as HTMLDialogElement | null
+    modal?.close()
   }
 
   const routeParams = Router.useParams<{ id: string }>()
@@ -54,8 +56,6 @@ export function ProjectDetailsPage(props: Props) {
     setTodos(newTodos)
   }
 
-  console.log('todos', todos)
-
   React.useEffect(() => {
     getFirebaseTodos()
   }, [])
@@ -68,7 +68,16 @@ export function ProjectDetailsPage(props: Props) {
   }
 
   const onTodoSearch = (value: string) => {
-    setTodos(props.projectManager.filterProjects(value))
+    const list = todos
+    if (value === '' || value === undefined || value === null) {
+      getFirebaseTodos()
+      setTodos(list)
+    } else {
+      const filteredTodos = list.filter(item => {
+        return item.name.includes(value)
+      })
+      setTodos(filteredTodos)
+    }
   }
 
   return (
@@ -169,12 +178,6 @@ export function ProjectDetailsPage(props: Props) {
               </div>
             </div>
           </div>
-          {modalOpen && (
-            <TodoForm
-              projectManager={props.projectManager}
-              todoCollection={todoCollection}
-            />
-          )}
           <div
             className='dashboard-card'
             style={{ flexGrow: 1 }}>
@@ -203,7 +206,7 @@ export function ProjectDetailsPage(props: Props) {
                     id='new-todo-btn'
                     className='material-icons-round'>
                     add
-                  </span>{' '}
+                  </span>
                 </button>
               </div>
             </div>
@@ -218,11 +221,14 @@ export function ProjectDetailsPage(props: Props) {
                 projectManager={props.projectManager}
                 todos={todos}
                 todoCollection={todoCollection}
+                modalOpen={modalOpen}
+                openModal={openModal}
+                closeModal={closeModal}
               />
             </div>
           </div>
         </div>
-        {/* <ThreeViewer /> */}
+        <ThreeViewer />
       </div>
     </div>
   )

@@ -1,4 +1,3 @@
-import * as Router from 'react-router-dom'
 import { ProjectManager } from '../classes/ProjectManager'
 import TodoForm from './TodoForm'
 import TodoCard from './TodoCard'
@@ -10,51 +9,48 @@ interface Props {
   todos: ITodo[]
   projectManager: ProjectManager
   todoCollection: Firestore.CollectionReference<ITodo>
+  modalOpen: boolean
+  openModal: () => void
+  closeModal: () => void
 }
 
-const ProjectTasksList = ({ todos, projectManager, todoCollection }: Props) => {
+const ProjectTasksList = ({ todos, projectManager, todoCollection, modalOpen, openModal, closeModal }: Props) => {
   const [selectedTodo, setSelectedTodo] = React.useState<ITodo>()
-  const [modalOpen, setModalOpen] = React.useState(false)
-
-  const routeParams = Router.useParams<{ id: string }>()
-
-  if (!routeParams.id) {
-    return <p>Invalid project id</p>
-  }
-
-  const project = projectManager.getProject(routeParams.id)
-
-  if (!project) {
-    return <p>Project with ID {routeParams.id} not found</p>
-  }
 
   const openTodoForm = (todo: ITodo) => {
-    setModalOpen(true)
-    const modal = document.getElementById('new-todo-modal') as HTMLDialogElement | null
-    modal?.showModal()
+    console.log('Opening selected todo form:', todo)
     setSelectedTodo(todo)
+    openModal()
   }
+
+  React.useEffect(() => {
+    if (!modalOpen) setSelectedTodo(undefined)
+  }, [modalOpen])
 
   const todoCards = todos.map(todo => (
     <div
       key={todo.id}
       onClick={() => openTodoForm(todo)}>
-      <TodoCard
-        key={todo.id}
-        todo={todo}
-      />
+      <TodoCard todo={todo} />
     </div>
   ))
 
+  console.log('form open and mounted? ', modalOpen, selectedTodo)
+
   return (
     <>
-      {modalOpen && (
-        <TodoForm
-          selectedTodo={selectedTodo || undefined}
-          todoCollection={todoCollection}
-          projectManager={projectManager}
-        />
-      )}
+      <dialog
+        id='new-todo-modal'
+        onClose={closeModal}>
+        {modalOpen && (
+          <TodoForm
+            selectedTodo={selectedTodo}
+            todoCollection={todoCollection}
+            projectManager={projectManager}
+            closeModal={closeModal}
+          />
+        )}
+      </dialog>
       <div id='projects-list'>{todos.length > 0 ? todoCards : <p>Nothing todo yet 🥹</p>}</div>
     </>
   )
