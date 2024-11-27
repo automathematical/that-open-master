@@ -6,7 +6,7 @@ import { deleteDocument, updateDocument } from '../firebase'
 import ProjectTasksList from './ProjectTasksList'
 import TodoForm from './TodoForm'
 import { getSubCollection } from '../firebase'
-import { ITodo, Todo } from '../classes/Todo'
+import { ITodo } from '../classes/Todo'
 import * as Firestore from 'firebase/firestore'
 import SearchBox from './SearchBox'
 
@@ -15,6 +15,17 @@ interface Props {
 }
 
 export function ProjectDetailsPage(props: Props) {
+  const [todos, setTodos] = React.useState<ITodo[]>([])
+  const [modalOpen, setModalOpen] = React.useState(false)
+
+  const openModal = () => {
+    const modal = document.getElementById('new-todo-modal')
+    if (modal && modal instanceof HTMLDialogElement) {
+      modal.showModal()
+    }
+    setModalOpen(true)
+  }
+
   const routeParams = Router.useParams<{ id: string }>()
   if (!routeParams.id) {
     return <p>Invalid project id</p>
@@ -25,8 +36,6 @@ export function ProjectDetailsPage(props: Props) {
   }
 
   const todoCollection = getSubCollection<ITodo>('/projects/' + project.id, 'todoList')
-
-  const [todos, setTodos] = React.useState<ITodo[]>([])
 
   const getFirebaseTodos = async () => {
     const firebaseTodos = await Firestore.getDocs(todoCollection)
@@ -53,22 +62,10 @@ export function ProjectDetailsPage(props: Props) {
 
   const navigateTo = Router.useNavigate()
 
-  const onNewTodo = () => {
-    const modal = document.getElementById('new-todo-modal')
-    if (modal && modal instanceof HTMLDialogElement) {
-      modal.showModal()
-    }
-  }
-
   props.projectManager.onProjectDeleted = async id => {
     await deleteDocument('/projects', id)
     navigateTo('/')
   }
-
-  // props.projectManager.onProjectUpdated = async project => {
-  //   await updateDocument('/projects', project.id, { name: 'newer name' })
-  //   navigateTo('/')
-  // }
 
   const onTodoSearch = (value: string) => {
     setTodos(props.projectManager.filterProjects(value))
@@ -172,7 +169,7 @@ export function ProjectDetailsPage(props: Props) {
               </div>
             </div>
           </div>
-          <TodoForm todoCollection={todoCollection} />
+          {modalOpen && <TodoForm todoCollection={todoCollection} />}
           <div
             className='dashboard-card'
             style={{ flexGrow: 1 }}>
@@ -196,7 +193,7 @@ export function ProjectDetailsPage(props: Props) {
                   <SearchBox onChange={value => onTodoSearch(value)} />
                 </div>
 
-                <button onClick={onNewTodo}>
+                <button onClick={openModal}>
                   <span
                     id='new-todo-btn'
                     className='material-icons-round'>

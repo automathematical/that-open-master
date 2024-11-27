@@ -2,7 +2,7 @@ import * as Router from 'react-router-dom'
 import { ProjectManager } from '../classes/ProjectManager'
 import TodoForm from './TodoForm'
 import TodoCard from './TodoCard'
-import { ITodo, Todo } from '../classes/Todo'
+import { ITodo } from '../classes/Todo'
 import React from 'react'
 import * as Firestore from 'firebase/firestore'
 
@@ -14,6 +14,7 @@ interface Props {
 
 const ProjectTasksList = ({ todos, projectManager, todoCollection }: Props) => {
   const [selectedTodo, setSelectedTodo] = React.useState<ITodo>()
+  const [modalOpen, setModalOpen] = React.useState(false)
 
   const routeParams = Router.useParams<{ id: string }>()
 
@@ -28,9 +29,10 @@ const ProjectTasksList = ({ todos, projectManager, todoCollection }: Props) => {
   }
 
   const openTodoForm = (todo: ITodo) => {
-    setSelectedTodo(todo)
+    setModalOpen(true)
     const modal = document.getElementById('new-todo-modal') as HTMLDialogElement | null
     modal?.showModal()
+    setSelectedTodo(todo)
   }
 
   const todoCards = todos.map(todo => (
@@ -46,10 +48,12 @@ const ProjectTasksList = ({ todos, projectManager, todoCollection }: Props) => {
 
   return (
     <>
-      <TodoForm
-        selectedTodo={selectedTodo || undefined}
-        todoCollection={todoCollection}
-      />
+      {modalOpen && (
+        <TodoForm
+          selectedTodo={selectedTodo || undefined}
+          todoCollection={todoCollection}
+        />
+      )}
       <div id='projects-list'>{todos.length > 0 ? todoCards : <p>Nothing todo yet 🥹</p>}</div>
     </>
   )

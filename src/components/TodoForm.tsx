@@ -9,14 +9,15 @@ interface Props {
 }
 
 const TodoForm = ({ selectedTodo, todoCollection }: Props) => {
-  //! The initial state is rendered once and then ignored.
-  const [todo, setTodo] = useState<ITodo>({
-    id: '',
-    name: '',
-    description: '',
-    status: 'pending',
-    finishDate: new Date(),
-  })
+  const [todo, setTodo] = useState<ITodo>(
+    selectedTodo || {
+      id: '',
+      name: '',
+      description: '',
+      status: 'pending',
+      finishDate: new Date(),
+    }
+  )
 
   // Update form when selectedTodo changes
   useEffect(() => {
@@ -94,7 +95,7 @@ const TodoForm = ({ selectedTodo, todoCollection }: Props) => {
 
   return (
     <>
-      <p>this is the selected ID:{todo.id || 'nothing to see here'}</p>
+      {/* <p>this is the selected ID:{todo.id || 'nothing to see here'}</p> */}
       <dialog id='new-todo-modal'>
         <form
           id='new-todo-form'
