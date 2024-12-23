@@ -114,6 +114,7 @@ export function IFCViewer(Props: Props) {
     a.click()
     URL.revokeObjectURL(url)
   }
+
   const OnPropertyExport = (FileName: string = 'properties') => {
     if (!fragmentModel) return
     const properties = fragmentModel.getLocalProperties()
@@ -260,10 +261,6 @@ export function IFCViewer(Props: Props) {
           floatingGrid.layout = 'second'
           updatePropsTable({ fragmentIdMap })
           propsTable.expanded = false
-
-          const simpleQTO = components.get(SimpleQTO)
-          await simpleQTO.sumQuantities(fragmentIdMap)
-          await simpleQTO.sumQuantitiesV2(fragmentIdMap)
         })
 
         highlighter.events.select.onClear.add(() => {
@@ -288,6 +285,25 @@ export function IFCViewer(Props: Props) {
     `
     })
 
+    const onQuantifier = (e: CustomEvent) => {
+      if (!floatingGrid) return
+      if (floatingGrid.layout !== 'quantifier') {
+        floatingGrid.layout = 'quantifier'
+      } else {
+        floatingGrid.layout = 'main'
+      }
+    }
+
+    const quantifierPanel = BUI.Component.create<BUI.Panel>(() => {
+      return BUI.html`
+      <bim-panel label="Quantifier">
+      <bim-panel-section name="quantifier" label="Quantifications" icon="solar:document-bold" fixed>
+      ${'quantities'}
+      </bim-panel-section>
+       </bim-panel>
+    `
+    })
+
     const onClassifier = (e: CustomEvent) => {
       if (!floatingGrid) return
       if (floatingGrid.layout !== 'classifier') {
@@ -304,8 +320,8 @@ export function IFCViewer(Props: Props) {
       <bim-label>Classifications</bim-label>
       ${classificationsTree}
       </bim-panel-section>
-       </bim-panel>
-    `
+      </bim-panel>
+      `
     })
 
     const onWorldsUpdate = (e: CustomEvent) => {
@@ -368,6 +384,10 @@ export function IFCViewer(Props: Props) {
         <bim-toolbar-section label="Groups">
         <bim-button icon="tabler:eye-filled" tooltip-title="Classifier" @click=${onClassifier}></bim-button>
         </bim-toolbar-section>
+
+        <bim-toolbar-section label="QTO">
+        <bim-button icon="tdesign:sum" tooltip-title="Quantifier" @click=${onQuantifier}></bim-button>
+        </bim-toolbar-section>
         </bim-toolbar>
       `
     })
@@ -414,6 +434,17 @@ export function IFCViewer(Props: Props) {
         elements: {
           toolbar,
           classifierPanel,
+        },
+      },
+      quantifier: {
+        template: `
+          "empty quantifierPanel" 1fr
+          "toolbar toolbar" auto
+          /1fr 20rem
+     `,
+        elements: {
+          toolbar,
+          quantifierPanel,
         },
       },
     }

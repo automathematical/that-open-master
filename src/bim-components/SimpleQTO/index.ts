@@ -21,7 +21,7 @@ export class SimpleQTO extends OBC.Component implements OBC.Disposable {
 
     // V1 uses the IfcPropertiesUtils to get the whole relation map
     async sumQuantities(fragmentsIdMap: FRAGS.FragmentIdMap) {
-        console.time("quantities V1")
+        // console.time("quantities V1")
 
         const fragmenstManager = this.components.get(OBC.FragmentsManager) // Get fragments manager
         const modelIdMap = fragmenstManager.getModelIdMap(fragmentsIdMap) // Get model ID map
@@ -49,13 +49,13 @@ export class SimpleQTO extends OBC.Component implements OBC.Disposable {
                 )
             })
         }
-        console.log(this._qtoResult);
-        console.timeEnd("quantities V1")
+        // console.log(this._qtoResult);
+        // console.timeEnd("quantities V1")
     }
 
     // V2 uses the IfcRelationsIndexer to get the IsDefinedBy relation
     async sumQuantitiesV2(fragmentsIdMap: FRAGS.FragmentIdMap) {
-        console.time("quantities V2")
+        // console.time("quantities V2")
         const fragmenstManager = this.components.get(OBC.FragmentsManager) // Get fragments manager
         const modelIdMap = fragmenstManager.getModelIdMap(fragmentsIdMap) // Get model ID map
         for (const modelId in modelIdMap) { // Iterate over model IDs
@@ -88,8 +88,8 @@ export class SimpleQTO extends OBC.Component implements OBC.Disposable {
                 }
             }
         }
-        console.log(this._qtoResult);
-        console.timeEnd("quantities V2")
+        // console.log(this._qtoResult);
+        // console.timeEnd("quantities V2")
     }
 
 
